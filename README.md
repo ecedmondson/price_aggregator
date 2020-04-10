@@ -5,3 +5,4 @@ repository for learning how to do Agile and Scrum in CS362 and Oregon State
 -Brandon Messenger
 -Kobe Chenea
 -Emily Edmondson
+-Tanner Bahora
