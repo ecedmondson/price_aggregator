@@ -13,4 +13,4 @@ pip3 install -r requirements.txt
 
 source venv/bin/activate
 
-python app.py
+python3 app.py
