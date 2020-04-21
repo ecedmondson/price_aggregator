@@ -12,7 +12,7 @@ repository for learning how to do Agile and Scrum in CS361 and Oregon State
 Instructions for installing packages and running virtual environment
 ######################################################################
 1) Navigate to the directory where you have cloned this repository
-2) Run 'virtualenv -p /bin/python3 venv' at the command line
+2) Run 'virtualenv -p /bin/python3.6 venv' at the command line
         Directory:
         -price_aggregator/
         |__venv/
