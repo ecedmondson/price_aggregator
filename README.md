@@ -22,7 +22,7 @@ the author to re-assign the reviewer who requested changes after
 implementing said changes.
 7) It is the responsibility of the author to request reviews from
 every team member when first submitting a PR.
-7) If an author of a PR feels that their PR is ready to be merged
+8) If an author of a PR feels that their PR is ready to be merged
 but the PR has received no reviews within a 24 hour period, the author
 has the right to ping team members in our shared slack channel.
 
