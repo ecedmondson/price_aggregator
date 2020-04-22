@@ -11,4 +11,5 @@ echo "Starting virtual env."
 source "$venvname/bin/activate"
 pip3 install -r requirements.txt
 
-python3 app.py
+export FLASK_APP=app.py
+python3 -m flask run -h 0.0.0.0 -p 9578 --reload
