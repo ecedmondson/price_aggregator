@@ -1,5 +1,5 @@
 from flask import Flask, render_template
-from flaskext.mysql import MySQL
+from db import *
 
 app = Flask(__name__)
 
@@ -12,29 +12,8 @@ app.config['MYSQL_DATABASE_HOST'] = 'classmysql.engr.oregonstate.edu'
 def home():
     return render_template('home.html')
 
-#Will return a tuple from the DB given a query string
-def dbIndex(query):
-    mysql = MySQL()
-    mysql.init_app(app)
-
-    conn = mysql.connect()
-    cursor =conn.cursor()
-
-    cursor.execute(query)
-    data = cursor.fetchall()
-    return data
-    
-#Will insert into the DB given a query string
-def dbAdd(query):
-    mysql = MySQL()
-    mysql.init_app(app)
-
-    conn = mysql.connect()
-    cursor =conn.cursor()
-
-    cursor.execute(query)
-    conn.commit()
-    return "Done"
+info = dbIndex(app, "SELECT * FROM Users")
+print(info)
 
 if __name__ == '__main__':
     app.run(debug=True)
