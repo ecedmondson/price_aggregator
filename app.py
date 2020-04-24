@@ -12,8 +12,5 @@ app.config['MYSQL_DATABASE_HOST'] = 'classmysql.engr.oregonstate.edu'
 def home():
     return render_template('home.html')
 
-info = dbIndex(app, "SELECT * FROM Users")
-print(info)
-
 if __name__ == '__main__':
     app.run(debug=True)
