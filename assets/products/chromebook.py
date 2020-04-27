@@ -4,6 +4,9 @@ from itertools import chain
 from builtins import any
 from assets.product import ScrapedProduct
 
+# https://stackoverflow.com/questions/11347505/what-are-some-approaches-to-outputting-a-python-data-structure-to-restructuredte
+# tableread -> SimpleRSTReader
+
 # def cache_scraped_products(func):
 #    cache = {}
 #    def wrapper(*args, **kwargs):
