@@ -9,6 +9,7 @@ from assets.product import ScrapedProduct
 #    def wrapper(*args, **kwargs):
         
 class Product():
+    """Do not instantiate this class. This is meant to provide general use fuctionality for all products."""
     subclasses = set()
 
     def __init_subclass__(cls, **kwargs):
@@ -32,7 +33,7 @@ class Product():
         """List of ScrapedProduct objects."""             
         return [p for client in self.clients for p in client.scrape_products()]
 
-class 14DA0012DX(Chromebook):
+class HPTouchScreenChromebook(Product):
     model = "14-DA0012DX"
     sub_name = "Chromebook 14-DA0012DX"
     def __init__(self):
@@ -42,4 +43,3 @@ class 14DA0012DX(Chromebook):
 
     def get_clients():
         return [BestBuy(), CompUSA(), Newegg(), Walmart(), Amazon()]
-         
