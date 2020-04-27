@@ -2,12 +2,13 @@ from bs4 import BeautifulSoup
 from requests import get
 from itertools import chain
 from builtins import any
+from assets.product import ScrapedProduct
 
 # def cache_scraped_products(func):
 #    cache = {}
 #    def wrapper(*args, **kwargs):
         
-class Chromebook():
+class Product():
     subclasses = set()
 
     def __init_subclass__(cls, **kwargs):
@@ -23,7 +24,8 @@ class Chromebook():
         def desirable(product):
             """Takes a ScrapedProduct object and returns user-desirability boolean."""
             product_characteristics = [getattr(product, x) for x in ["source", "price_int", "use"]]
-            matches = [x in exclude if not isinstance(x, int) else x < price_ceiling for x in exclude]               return any(matches)
+            exclusion_matches = [x in exclude if not isinstance(x, int) else x < price_ceiling for x in exclude]
+            return any(exclusion_matches)
         return list(filter(lambda p: not desirable(p), self.products))
     
     def get_all_products():

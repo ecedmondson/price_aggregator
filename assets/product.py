@@ -1,4 +1,4 @@
-from assets/configs/config import cfg
+from assets.configs.config import cfg
 
 class ScrapedProduct():
     """Object to represent a scraped Product.
@@ -13,4 +13,4 @@ class ScrapedProduct():
         self.price = price
         self.photo = photo or cfg.product_photo_default
         self.instock = instock or cfg.stock_default
-        self.new = new or cf.use_status
+        self.new = new or cfg.use_status
