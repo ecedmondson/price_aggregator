@@ -12,4 +12,5 @@ source "$venvname/bin/activate"
 pip3 install -r requirements.txt
 
 export FLASK_APP=app.py
+export FLASK_DEBUG=1
 python3 -m flask run -h 0.0.0.0 -p 9578 --reload
