@@ -13,7 +13,7 @@ class Amazon(BaseClient):
 
     def get_price(self):
         # price_inside_buybox only seems to work with New products
-        return self.soup.find(id="price_inside_buybox")
+        return self.soup.find(id="price_inside_buybox").text
 
     def get_photo(self):
         # parent is id="imgTagWrapperId

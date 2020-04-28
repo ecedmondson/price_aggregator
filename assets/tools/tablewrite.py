@@ -47,8 +47,9 @@ class RSTWriter():
     def write_table_to_file(self, filepath, grid, tablename="Product"):
         table = self.make_table(grid)
         file = open(filepath, 'a')
-        file.write("+" * len(tablename) + 2)
-        file.write(tablename)
-        file.write("+" * len(tablename) + 2)
+        header_format = "+" * (len(tablename) + 2)
+        file.write(f"{header_format}\n")
+        file.write(f"{tablename}\n")
+        file.write(f"{header_format}\n")
         file.write(table)
         file.close()
