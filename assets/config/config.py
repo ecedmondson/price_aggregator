@@ -5,5 +5,6 @@ class GeneralUseConfig():
     product_photo_default = "/static/product_null.png"
     stock_default = "Likely In Stock, Check Retailer"
     use_status = "Likely New, Check Retailer"
+    cache_path = "data/"
 
 cfg = GeneralUseConfig()

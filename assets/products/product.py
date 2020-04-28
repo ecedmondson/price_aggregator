@@ -2,7 +2,6 @@ from bs4 import BeautifulSoup
 from requests import get
 from itertools import chain
 from builtins import any
-from assets.product import ScrapedProduct
 
 # https://stackoverflow.com/questions/11347505/what-are-some-approaches-to-outputting-a-python-data-structure-to-restructuredte
 # tableread -> SimpleRSTReader
@@ -19,8 +18,13 @@ class Product():
         super().__init_subclass__(**kwargs)
         if "sub_name" in cls.__dict__:
             cls.subclasses.add(cls)
+    
+    def get_all_products():
+        """List of ScrapedProduct objects."""             
+        return [p for client in self.clients for p in client.scrape_products()]
 
     def filter_products(self, sources_to_exclude=None, price_ceiling=None, use_status=None):
+        all_product = self.get_all_products()
         sources_to_exclude = sources_to_exclude or []
         price_ceiling = price_ceiling or 0
         use_status = use_status or []
@@ -31,19 +35,4 @@ class Product():
             prod_chars = [getattr(product, x) for x in ["source", "price_int", "use"]]
             exclusion_matches = [x in exclude if not isinstance(x, int) else x < price_ceiling for x in prod_chars]
             return any(exclusion_matches)
-        return list(filter(lambda p: not desirable(p), self.products))
-    
-    def get_all_products():
-        """List of ScrapedProduct objects."""             
-        return [p for client in self.clients for p in client.scrape_products()]
-
-class HPTouchScreenChromebook(Product):
-    model = "14-DA0012DX"
-    sub_name = "Chromebook 14-DA0012DX"
-    def __init__(self):
-        super().__init__()
-        self.clients = self.get_clients()
-        self.products = self.get_all_products()
-
-    def get_clients():
-        return [BestBuy(), CompUSA(), Newegg(), Walmart(), Amazon()]
+        return list(filter(lambda p: not desirable(p), all_products))
