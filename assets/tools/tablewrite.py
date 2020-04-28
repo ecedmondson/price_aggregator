@@ -12,26 +12,26 @@ class RSTWriter():
 # isn't setup yet and I don't want us to get
 # banned from any websites for being robots.
 # Hence, this is solution for now.
-	def table_div(self, max_cols, header_flag=1):
-	    out = ""
-	    if header_flag == 1:
-	        style = "="
-	    else:
-	        style = "-"
+    def table_div(self, max_cols, header_flag=1):
+        out = ""
+        if header_flag == 1:
+            style = "="
+        else:
+            style = "-"
 
-	    for max_col in max_cols:
-	        out += max_col * style + " "
+        for max_col in max_cols:
+            out += max_col * style + " "
 
-	    out += "\n"
-	    return out
+        out += "\n"
+        return out
 
 
-	def normalize_row(self, row, max_cols):
-	    r = ""
-	    for i, max_col in enumerate(max_cols):
-	        r += row[i] + (max_col  - len(row[i]) + 1) * " "
+    def normalize_row(self, row, max_cols):
+        r = ""
+        for i, max_col in enumerate(max_cols):
+            r += row[i] + (max_col  - len(row[i]) + 1) * " "
 
-	    return r + "\n"
+        return r + "\n"
 
     def make_table(self, grid):
         max_cols = [max(out) for out in map(list, zip(*[[len(item) for item in row] for row in grid]))]

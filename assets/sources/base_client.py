@@ -7,7 +7,7 @@ from assets.config.config import cfg
 from assets.tools.tablewrite import HEADERS
 from assets.tools.tablewrite import RSTWriter
 from tableread import SimpleRSTReader
-from datetime.datetime import now
+from datetime import datetime
 from dateutil.parser import parse
 from datetime import timedelta
 
@@ -68,7 +68,7 @@ class BaseCachingClient():
         table = reader[tablename]
         ttl = table.get_fields("TTL")
         cache_time = table.get_fields("Timestamp")
-        if now() > parse(cache_time) + timedelta(hours=int(ttl)):
+        if datetime.now() > parse(cache_time) + timedelta(hours=int(ttl)):
             print(f"Data not within ttl")
             return False
         return True
@@ -81,7 +81,7 @@ class BaseCachingClient():
     def cache_data(self, filename, products, tablename="Product"):
         client = RSTWriter()
         grid = [HEADERS]
-        [grid.append([p.name, p.price, p.photo, str(now()), "24"])]
+        [grid.append([p.name, p.price, p.photo, str(datetime.now()), "24"])]
         client.write_table_to_file(filename, grid)
 
 
