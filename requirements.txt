@@ -21,3 +21,4 @@ stevedore==1.32.0
 virtualenv==20.0.17
 virtualenv-clone==0.5.4
 virtualenvwrapper==4.8.4
+git+git://github.com/ecedmondson/chromedriver_installer@master#egg=chromedriver_installer
