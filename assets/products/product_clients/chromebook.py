@@ -13,12 +13,20 @@ class HPTouchScreenChromebook(BaseProduct):
     model = "14-DA0012DX"
     sub_name = "14DA0012DX_hp_chromebook"
     walmart_product_image_alt = "HP 2-in-1 14"
-    walmart_tuple = (walmart, walmart_product_image_alt,)
+    walmart_tuple = (
+        walmart,
+        walmart_product_image_alt,
+    )
+
     def __init__(self):
         super().__init__()
         self.clients = self.get_clients()
         self.products = self.get_all_products()
 
     def get_clients(self):
-        return [BestBuy(self.sub_name, self.best_buy), CompUSA(self.sub_name, self.comp_usa), Walmart(self.sub_name, *self.walmart_tuple), Amazon(self.sub_name, self.amazon)]
-
+        return [
+            BestBuy(self.sub_name, self.best_buy),
+            CompUSA(self.sub_name, self.comp_usa),
+            Walmart(self.sub_name, *self.walmart_tuple),
+            Amazon(self.sub_name, self.amazon),
+        ]

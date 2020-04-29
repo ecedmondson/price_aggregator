@@ -1,14 +1,18 @@
 from assets.config.config import cfg
 from datetime import datetime
 
-class ScrapedProduct():
+
+class ScrapedProduct:
     """Object to represent a scraped Product.
     This class is a container for the common attributes pertinent
     to any product that is scraped by the Price Aggregator. The
     data is organized into this object as an easy to access those
     shared attributes.
     """
-    def __init__(self, name, source, price, photo=None, instock=None, new=None, price_check=None):
+
+    def __init__(
+        self, name, source, price, photo=None, instock=None, new=None, price_check=None
+    ):
         self.output = "Scraped Product debug info: "
         self.name = name
         self.source = source

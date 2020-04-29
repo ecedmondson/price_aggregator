@@ -16,6 +16,7 @@ from urllib3.exceptions import MaxRetryError
 import os
 import subprocess
 
+
 class BaseRequestsClient:
     def get(self, url, **kwargs):
         # Some websites get cranky and want better UA info.
@@ -39,17 +40,20 @@ class BaseRequestsClient:
                 return r
             return False
 
-results = dict()
-def cache(func):
 
+results = dict()
+
+
+def cache(func):
     def wrapper(*args, **kwargs):
         if kwargs["cache_id"] in results:
             return results[kwargs["cache_id"]]
-        result= func(*args)
+        result = func(*args)
         results[kwargs["cache_id"]] = result
         return result
 
     return wrapper
+
 
 @cache
 def get_selenium_webdriver(cache_id=None):
@@ -57,9 +61,11 @@ def get_selenium_webdriver(cache_id=None):
     chrome_options.add_argument("--headless")
     return webdriver.Chrome(chrome_options=chrome_options)
 
+
 @cache
 def killed(cache_id=None):
     return True
+
 
 class BaseSeleniumClient:
     def __init__(self):
@@ -68,7 +74,9 @@ class BaseSeleniumClient:
         # to configure this yourself
         chrome_options = Options()
         chrome_options.add_argument("--headless")
-        self.selenium = get_selenium_webdriver(cache_id="base_client_selenium_webdriver")
+        self.selenium = get_selenium_webdriver(
+            cache_id="base_client_selenium_webdriver"
+        )
         self.pid_proc = self.selenium.service.process.pid
 
     def __del__(self):
@@ -77,23 +85,32 @@ class BaseSeleniumClient:
                 print("Trying to close Selenium Google Chrome Instance.")
                 self.selenium.close()
                 print(f"Trying to kill chromedriver pid at {self.pid_proc}.")
-                kill = subprocess.Popen(f"kill {self.pid_proc}", shell=True, stdout=subprocess.PIPE).stdout
+                kill = subprocess.Popen(
+                    f"kill {self.pid_proc}", shell=True, stdout=subprocess.PIPE
+                ).stdout
                 killed(cache_id="selenium_is_dead")
         except (ImportError, MaxRetryError) as e:
-            print(f"SELENIUM SHUTDOWN ERROR: highly recommended to manually pgrep for {self.pid_proc}.")
+            print(
+                f"SELENIUM SHUTDOWN ERROR: highly recommended to manually pgrep for {self.pid_proc}."
+            )
             print(f"Original Error:\n\t {type(e)}: {e}.")
         finally:
-            check = subprocess.Popen("pgrep -lf chrome", shell=True, stdout=subprocess.PIPE).stdout
-            grep = check.read().decode('utf-8')
+            check = subprocess.Popen(
+                "pgrep -lf chrome", shell=True, stdout=subprocess.PIPE
+            ).stdout
+            grep = check.read().decode("utf-8")
             if str(self.pid_proc) in grep:
-                print(f"{self.pid_proc} found running after trying to kill Selenium Chrome & Chromedriver.")
+                print(
+                    f"{self.pid_proc} found running after trying to kill Selenium Chrome & Chromedriver."
+                )
                 print("You might want to manually check file handles.")
 
     def dynamic_get(self, url):
         self.selenium.get(url)
         return self.selenium.page_source
 
-class BaseCachingClient():
+
+class BaseCachingClient:
     # We can change this implementation, but
     # some form of caching needs to take place
     # to avoid rate-limiting. Another option
@@ -108,7 +125,7 @@ class BaseCachingClient():
 
     def data_within_ttl(self, filename, tablename="Product"):
         reader = SimpleRSTReader(self.filepath(filename))
-        table = reader['Default']
+        table = reader["Default"]
         ttl = table.get_fields("ttl")
         cache_time = table.get_fields("timestamp")
         if datetime.now() > (parse(cache_time[0]) + timedelta(hours=int(ttl[0]))):
@@ -119,17 +136,25 @@ class BaseCachingClient():
     def get_cached_data(self, filename):
         reader = SimpleRSTReader(self.filepath(filename))
         table = reader["Default"]
-        return (table.get_fields("price")[0], table.get_fields("photo")[0], table.get_fields("timestamp")[0])
+        return (
+            table.get_fields("price")[0],
+            table.get_fields("photo")[0],
+            table.get_fields("timestamp")[0],
+        )
 
     def cache_data(self, filename, products):
         client = RSTWriter()
         grid = [HEADERS]
-        [grid.append([p.name, p.price, p.photo, str(datetime.now()), "24"]) for p in products]
+        [
+            grid.append([p.name, p.price, p.photo, str(datetime.now()), "24"])
+            for p in products
+        ]
         client.write_table_to_file(self.filepath(filename), grid)
 
 
-class BaseContainer():
+class BaseContainer:
     """Container for self.document and self.soup."""
+
     def __init__(self, **kwargs):
         self.add(**kwargs)
 
@@ -161,10 +186,24 @@ class BaseClient(BaseRequestsClient, BaseSeleniumClient, BaseCachingClient):
         return super().__getattribute__(item)
 
     def get_product(self):
-        if self.any_cached_data(self.product_name) and self.data_within_ttl(self.product_name):
+        if self.any_cached_data(self.product_name) and self.data_within_ttl(
+            self.product_name
+        ):
             price, photo, timestamp = self.get_cached_data(self.product_name)
-            return ScrapedProduct(self.product_name, self.source, price, photo=photo, new=self.use_status, price_check=parse(timestamp))
-        product = ScrapedProduct(self.product_name, self.source, self.get_price(), photo=self.get_photo(), new=self.use_status)
+            return ScrapedProduct(
+                self.product_name,
+                self.source,
+                price,
+                photo=photo,
+                new=self.use_status,
+                price_check=parse(timestamp),
+            )
+        product = ScrapedProduct(
+            self.product_name,
+            self.source,
+            self.get_price(),
+            photo=self.get_photo(),
+            new=self.use_status,
+        )
         self.cache_data(self.product_name, [product])
-        return product, 
-
+        return (product,)
