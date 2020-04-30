@@ -3,14 +3,17 @@ from db import *
 
 app = Flask(__name__)
 
-app.config['MYSQL_DATABASE_USER'] = 'cs361_bahorat'
-app.config['MYSQL_DATABASE_PASSWORD'] = '1011'
-app.config['MYSQL_DATABASE_DB'] = 'cs361_bahorat'
-app.config['MYSQL_DATABASE_HOST'] = 'classmysql.engr.oregonstate.edu'
+dbConfig(app, "cs361_bahorat", "1011")
+initializeDb(app)
+insertCustomer(app, "Tanner", "Bahora", "tan@fna", "pass")
+
+data = findCustomer(app, "sdf@fds", "pass")
+print(data)
 
 @app.route("/")
 def home():
     return render_template('home.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
