@@ -4,7 +4,7 @@ from pymysql.err import InternalError, OperationalError, ProgrammingError
 #Available functions:
 #--------------------
 #dbConfig(app, user, password, host = "classmysql.engr.oregonstate.edu", dbName = None)
-#initialize()
+#createTables()
 #index(query)
 #add(query)
 #insertCustomer(f_name, l_name, email, password, customer_id = None)
@@ -44,7 +44,7 @@ class Database():
 
 
     #Sets up initial tables
-    def initialize(self):
+    def createTables(self):
         #Set up connection
         try:
             mysql = MySQL()
