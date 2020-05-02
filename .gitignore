@@ -1,4 +1,6 @@
-venv/
+venv*/
 .idea/
 __pycache__/
+chromedriver_installer/
+build/
 

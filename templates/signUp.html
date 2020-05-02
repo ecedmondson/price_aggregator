@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <div class="wrapper">
+        <form method="POST" action="/" class="form-signin">
+            <h2 class="form-signin-heading text-center">Sign Up</h2>
+            <fieldset>
+                {{form.fname.label}}
+                {{form.fname(placeholder="John")}}
+                {% if form.fname.errors %}
+                    <ul>
+                        {% for error in form.fname.errors %}<li>{{error}}</li>{% endfor %}
+                    </ul>
+                {% endif %}
+            </fieldset>
+
+            <fieldset>
+                {{form.lname.label}}
+                {{form.lname(placeholder="John")}}
+                {% if form.lname.errors %}
+                    <ul>
+                        {% for error in form.lname.errors %}<li>{{error}}</li>{% endfor %}
+                    </ul>
+                {% endif %}
+            </fieldset>
+
+            <fieldset>
+                {{ form.email.label }}
+                {{ form.email(placeholder='youremail@example.com') }}
+                {% if form.email.errors %}
+                  <ul>
+                    {% for error in form.email.errors %}<li>{{ error }}</li>{% endfor %}
+                  </ul>
+                {% endif %}
+              </fieldset>
+        
+              <fieldset>
+                {{ form.password.label }}
+                {{ form.password }}
+                {% if form.password.errors %}
+                  <ul>
+                    {% for error in form.password.errors %}<li>{{ error }}</li>{% endfor %}
+                  </ul>
+                {% endif %}
+              </fieldset>
+
+              <div class="submitbutton">
+                <input id="submit" type="submit" value="Submit">
+              </div>
+            <!-- <div class="form-control">{{ form.email.label }} {{ form.email }}</div>
+            <input type="password" class="form-control" name="password" placeholder="Password" required="" />
+            <input type="password" class="form-control" name="password" placeholder="Password" required="" />
+            <button class="btn btn-lg btn-primary btn-block">Login</button> -->
+        </form>
+    </div>
+{% endblock content %}
