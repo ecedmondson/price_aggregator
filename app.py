@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, flash, redirect, url_for
 from database.db import Database
-from flask_login import LoginManager
+from flask_login import LoginManager, login_user, logout_user, login_required, UserMixin
 from config import Config
 from forms import SignUpForm
 
@@ -8,17 +8,22 @@ app = Flask(__name__)
 app.config.from_object(Config)
 
 db = Database(app, "cs361_alberjes", 3526)
-#db.createTables()
-login_manager = LoginManager(app)
-
+print(db.findCustomer("hello123@gmail.com","12345678"))
+login_manager = LoginManager()
 login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+class User(UserMixin):
+  def __init__(self,id):
+    self.id = id
 
 @app.route("/")
 def home():
     return render_template('home.html')
 
-# @app.route("/login")
-# def login():
+@app.route("/login")
+def login():
+    return "you are logged in"
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
@@ -28,20 +33,27 @@ def signup():
         #add sign up logic
         if form.validate_on_submit():
             print("inside if")
-            flash('Login credentials received')
             # fname = form.get('fname')
             # lname = form.get('lname')
-            # email = form.get('email')
-            # password = form.get('password')
-            # existing_user = db.findCustomer(email, password)
-            # print("existing_user %d", existing_user)
-            return redirect(url_for('home'))
+            email = form.email.data
+            password = form.password.data
+            existing_user = db.findCustomer(email, password)
+            print("existing_user %d", existing_user)
+            if existing_user == None:
+                login_user(User(email))
+                flash('Login credentials received')
+                return redirect(url_for('home'))
         else:
             print("validate failed", form.validate_on_submit())
     return render_template('signUp.html',
                             title='Create and Account.',
                             form=form)
 
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return "you are logged out"
 
 # Helper routes to make flask-login happy
 
@@ -49,16 +61,14 @@ def signup():
 @login_manager.user_loader
 def load_user(user_id):
     """Check if user is logged-in on every page load."""
-    if user_id is not None:
-        return User.query.get(user_id)
-    return None
+    return User(user_id)
 
 # Route for when user attempts to hit an unauthorized route in the app
 @login_manager.unauthorized_handler
 def unauthorized():
     """Redirect unauthorized users to Login page."""
     flash('You must be logged in to view that page.')
-    return redirect(url_for('auth_bp.login'))
+    return redirect(url_for('login'))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
