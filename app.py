@@ -8,7 +8,6 @@ app = Flask(__name__)
 app.config.from_object(Config)
 
 db = Database(app, "cs361_alberjes", 3526)
-print(db.findCustomer("hello123@gmail.com","12345678"))
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
@@ -19,6 +18,7 @@ class User(UserMixin):
 
 @app.route("/")
 def home():
+    print(db.findCustomer("hello123@gmail.com","12345678"))
     return render_template('home.html')
 
 @app.route("/login")
@@ -33,14 +33,18 @@ def signup():
         #add sign up logic
         if form.validate_on_submit():
             print("inside if")
-            # fname = form.get('fname')
-            # lname = form.get('lname')
+            fname = form.fname.data
+            lname = form.lname.data
             email = form.email.data
             password = form.password.data
+            # Make sure user email isn't already in the database
             existing_user = db.findCustomer(email, password)
             print("existing_user %d", existing_user)
-            if existing_user == None:
+            if existing_user:
+                flash('Email already exists, please log in or use a different email address.')
+            else: 
                 login_user(User(email))
+                db.insertCustomer(fname, lname, email, password)
                 flash('Login credentials received')
                 return redirect(url_for('home'))
         else:
