@@ -23,7 +23,9 @@ class Database():
     def __init__(self, app, user, password, host = "classmysql.engr.oregonstate.edu", dbName = None):
         
         self.app = app
-        
+        self.mysql = MySQL()
+        self.mysql.init_app(self.app)
+
         if(dbName == None):
             dbName = user
 
@@ -47,10 +49,7 @@ class Database():
     def createTables(self):
         #Set up connection
         try:
-            mysql = MySQL()
-            mysql.init_app(self.app)
-
-            conn = mysql.connect()
+            conn = self.mysql.connect()
             cursor = conn.cursor()
         except OperationalError:
             print("Cannot connect to MySQL server")
@@ -87,10 +86,7 @@ class Database():
     def index(self, query):
         #Sets up connection
         try:
-            mysql = MySQL()
-            mysql.init_app(self.app)
-
-            conn = mysql.connect()
+            conn = self.mysql.connect()
             cursor = conn.cursor()
         except OperationalError:
             print("Cannot connect to MySQL server")
@@ -118,10 +114,7 @@ class Database():
     def add(self, query):
         #Connect to database
         try:
-            mysql = MySQL()
-            mysql.init_app(self.app)
-
-            conn = mysql.connect()
+            conn = self.mysql.connect()
             cursor = conn.cursor()
         except OperationalError:
             print("Cannot connect to MySQL server")
