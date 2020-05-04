@@ -1,35 +1,46 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, flash, redirect, url_for
 from database.db import Database
 from flask_login import LoginManager
+from config import Config
 from forms import SignUpForm
 
 app = Flask(__name__)
-db = Database()
-login_manager = LoginManager()
+app.config.from_object(Config)
+
+db = Database(app, "cs361_alberjes", 3526)
+#db.createTables()
+login_manager = LoginManager(app)
+
+login_manager.init_app(app)
 
 @app.route("/")
 def home():
     return render_template('home.html')
 
-@app.route("/login")
-def login():
+# @app.route("/login")
+# def login():
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
-    signup_form = SignUpForm()
-    if request.method == "POST"
+    form = SignUpForm()
+    print(request.method)
+    if request.method == "POST":
         #add sign up logic
-        if signup_form.validate_on_submit():
-            fname = signup_form.get('fname')
-            lname = signup_form.get('lname')
-            email = signup_form.get('email')
-            password = signup_form.get('password')
-            
-    return render_template("signUp.html",
-                            title="Create and Account.",
-                            form=SignUpForm(),
-                            template="signup-page",
-                            body="Sign up for a user account.")
+        if form.validate_on_submit():
+            print("inside if")
+            flash('Login credentials received')
+            # fname = form.get('fname')
+            # lname = form.get('lname')
+            # email = form.get('email')
+            # password = form.get('password')
+            # existing_user = db.findCustomer(email, password)
+            # print("existing_user %d", existing_user)
+            return redirect(url_for('home'))
+        else:
+            print("validate failed", form.validate_on_submit())
+    return render_template('signUp.html',
+                            title='Create and Account.',
+                            form=form)
 
 
 # Helper routes to make flask-login happy

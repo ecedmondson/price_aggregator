@@ -16,20 +16,30 @@
     <body>
 
         <nav class="navbar navbar-expand navbar-dark bg-dark">
-            <a href="#" class="navbar-brand">Price Aggregator</a>
+            <a href="{{  url_for('home')  }}" class="navbar-brand">Price Aggregator</a>
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav">
                     <li class="nav-item">
                         <a href="#" class="nav-link">Login</a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link">Sign Up</a>
+                        <a href="{{  url_for('signup')  }}" class="nav-link">Sign Up</a>
                     </li>
                 </ul>
             </div>
         </nav>
 
         <div class="container">
+            <!--Flashes messages to user, message disappears after first render. Used for login feedback to user-->
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <ul>
+                {% for message in messages %}
+                <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
             {% block content %}{% endblock %}
         </div>
 
