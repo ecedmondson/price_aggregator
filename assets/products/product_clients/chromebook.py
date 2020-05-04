@@ -1,5 +1,5 @@
 from assets.products.base_product import BaseProduct
-from assets.sources.source_clients.amazon import Amazon
+from assets.sources.source_clients.amazon import AmazonUsed
 from assets.sources.source_clients.best_buy import BestBuy
 from assets.sources.source_clients.comp_usa import CompUSA
 from assets.sources.source_clients.walmart import Walmart
@@ -28,5 +28,5 @@ class HPTouchScreenChromebook(BaseProduct):
             BestBuy(self.sub_name, self.best_buy),
             CompUSA(self.sub_name, self.comp_usa),
             Walmart(self.sub_name, *self.walmart_tuple),
-            Amazon(self.sub_name, self.amazon),
+            AmazonUsed(self.sub_name, self.amazon),
         ]
