@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, flash, redirect, url_for
 from database.db import Database
 from flask_login import LoginManager, login_user, logout_user, login_required, UserMixin
 from config import Config
-from forms import SignUpForm
+from forms import SignUpForm, LoginForm
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -21,9 +21,26 @@ def home():
     print(db.findCustomer("hello123@gmail.com","12345678"))
     return render_template('home.html')
 
-@app.route("/login")
+@app.route("/login", methods=["GET", "POST"])
 def login():
-    return "you are logged in"
+    form = LoginForm()
+    if request.method == "POST":
+        #add sign in logic
+        if form.validate_on_submit():
+            email = form.email.data
+            password = form.password.data
+            # Make sure user email is already in the database
+            existing_user = db.findCustomer(email, password)
+            if existing_user:
+                login_user(User(email))
+                flash('Login credentials received')
+                return redirect(url_for('home'))
+            else: 
+                flash('Email does not exist. Please create an account.')
+    return render_template('login.html',
+                            title='Log into Existing Account.',
+                            form=form)
+
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
@@ -32,14 +49,12 @@ def signup():
     if request.method == "POST":
         #add sign up logic
         if form.validate_on_submit():
-            print("inside if")
             fname = form.fname.data
             lname = form.lname.data
             email = form.email.data
             password = form.password.data
             # Make sure user email isn't already in the database
             existing_user = db.findCustomer(email, password)
-            print("existing_user %d", existing_user)
             if existing_user:
                 flash('Email already exists, please log in or use a different email address.')
             else: 
@@ -47,8 +62,6 @@ def signup():
                 db.insertCustomer(fname, lname, email, password)
                 flash('Login credentials received')
                 return redirect(url_for('home'))
-        else:
-            print("validate failed", form.validate_on_submit())
     return render_template('signUp.html',
                             title='Create and Account.',
                             form=form)
@@ -57,10 +70,10 @@ def signup():
 @login_required
 def logout():
     logout_user()
-    return "you are logged out"
+    flash('You are logged out.')
+    return render_template('home.html')
 
-# Helper routes to make flask-login happy
-
+# Functions required for user-login
 # For every page load, app must verify that the user is logged in or not logged in
 @login_manager.user_loader
 def load_user(user_id):
