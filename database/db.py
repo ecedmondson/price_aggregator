@@ -25,6 +25,7 @@ class Database():
         self.app = app
         self.mysql = MySQL()
         self.mysql.init_app(self.app)
+        self.numberOfTables = 4
 
         if(dbName == None):
             dbName = user
@@ -42,7 +43,10 @@ class Database():
             print("Could not configure app to connect to database")
             print(e)
 
-        
+        #Checks to see if all 4 tables are in the database
+        tables = self.index("show tables;")
+        if(len(tables) != self.numberOfTables):
+            self.createTables()
 
 
     #Sets up initial tables
@@ -58,29 +62,55 @@ class Database():
             print("Could not connect to database")
             print(e)
 
-        #Cretes queries for each table
+        #Creates queries for each table
         createCustomers = "CREATE TABLE Customers (customer_id int NOT NULL, f_name varchar(255) NOT NULL,l_name varchar(255) NOT NULL, email varchar(255) NOT NULL, password varchar(255) NOT NULL, PRIMARY KEY(customer_id), UNIQUE KEY(email));"
         createProducts = "CREATE TABLE Products (product_id int, name varchar(255), brand varchar(255), manuf_model varchar(255), PRIMARY KEY(product_id));"
         createRetailers = "CREATE TABLE Retailers (retailer_id int, name varchar(255), url varchar(255), PRIMARY KEY(retailer_id), UNIQUE KEY(name, url));"
         createRetailers_Products = "CREATE TABLE Retailers_Products (product_id int, retailer_id int, PRIMARY KEY (product_id, retailer_id), FOREIGN KEY (product_id) REFERENCES Products(product_id), FOREIGN KEY (retailer_id) REFERENCES Retailers(retailer_id))"
 
-        #Executes queries
+        #Executes queries one table at a time
         try:
             cursor.execute(createCustomers)
-            cursor.execute(createProducts)
-            cursor.execute(createRetailers)
-            cursor.execute(createRetailers_Products)
-            conn.commit()
-            return "Done"
         except UnboundLocalError:
             print("Error - Make sure you are correctly connected to the DB")
         except InternalError:
-            print("Table(s) already exist")
+            print("Customers table already exist")
         except Exception as e:
             print("Could not create table(s)")
             print(e)
 
-        return "Error"
+        try:
+            cursor.execute(createProducts)
+        except UnboundLocalError:
+            print("Error - Make sure you are correctly connected to the DB")
+        except InternalError:
+            print("Products table already exist")
+        except Exception as e:
+            print("Could not create table(s)")
+            print(e)
+
+        try:
+            cursor.execute(createRetailers)
+        except UnboundLocalError:
+            print("Error - Make sure you are correctly connected to the DB")
+        except InternalError:
+            print("Retailers table already exist")
+        except Exception as e:
+            print("Could not create table(s)")
+            print(e)
+
+        try:
+            cursor.execute(createRetailers_Products)
+        except UnboundLocalError:
+            print("Error - Make sure you are correctly connected to the DB")
+        except InternalError:
+            print("Retailers_Products table already exist")
+        except Exception as e:
+            print("Could not create table(s)")
+            print(e)
+
+        conn.commit()
+        return "Done"
 
     #Will return a tuple of tuples from the DB given a query string
     def index(self, query):
