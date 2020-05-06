@@ -4,6 +4,7 @@ beautifulsoup4==4.9.0
 black==19.10b0
 certifi==2020.4.5.1
 chardet==3.0.4
+chromedriver-installer==0.0.6
 click==7.1.1
 fake-useragent==0.1.11
 Flask==1.1.2
@@ -14,6 +15,7 @@ jgt-common==1.0.7
 Jinja2==2.11.1
 MarkupSafe==1.1.1
 pathspec==0.8.0
+python-dateutil==2.8.1
 regex==2020.4.4
 requests==2.23.0
 selenium==3.141.0
@@ -31,6 +33,7 @@ flask-wtf==0.14.3
 dnspython==1.16.0
 email-validator==1.1.0
 soupsieve==1.9.5
+tableread==2.0.4
 toml==0.10.0
 typed-ast==1.4.1
 urllib3==1.25.8
