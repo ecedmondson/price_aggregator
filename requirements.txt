@@ -4,7 +4,6 @@ beautifulsoup4==4.9.0
 black==19.10b0
 certifi==2020.4.5.1
 chardet==3.0.4
-chromedriver-installer==0.0.6
 click==7.1.1
 fake-useragent==0.1.11
 Flask==1.1.2
