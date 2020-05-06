@@ -5,6 +5,7 @@ from assets.tools.tablewrite import RSTWriter
 from datetime import datetime
 from datetime import timedelta
 from dateutil.parser import parse
+from dateutil.parser._parser import ParserError
 from fake_useragent import UserAgent
 from jgt_common.http_helpers import is_status_code
 from requests import get as rg
@@ -31,7 +32,6 @@ class BaseRequestsClient:
         }
         try:
             r = rg(url, **kwargs)
-            print(r)
             assert is_status_code("OK", r) is True
             return r
         except AssertionError:
@@ -66,6 +66,9 @@ def get_selenium_webdriver(cache_id=None):
 def killed(cache_id=None):
     return True
 
+@cache
+def run_finally_block(cache_id=None):
+    return True
 
 class BaseSeleniumClient:
     def __init__(self):
@@ -95,15 +98,17 @@ class BaseSeleniumClient:
             )
             print(f"Original Error:\n\t {type(e)}: {e}.")
         finally:
-            check = subprocess.Popen(
-                "pgrep -lf chrome", shell=True, stdout=subprocess.PIPE
-            ).stdout
-            grep = check.read().decode("utf-8")
-            if str(self.pid_proc) in grep:
-                print(
-                    f"{self.pid_proc} found running after trying to kill Selenium Chrome & Chromedriver."
-                )
-                print("You might want to manually check file handles.")
+            if "selenium_finally_block" not in results:
+                run_finally_block(cache_id="selenium_finally_block")
+                check = subprocess.Popen(
+                    "pgrep -lf chrome", shell=True, stdout=subprocess.PIPE
+                ).stdout
+                grep = check.read().decode("utf-8")
+                if str(self.pid_proc) in grep:
+                    print(
+                        f"{self.pid_proc} found running after trying to kill Selenium Chrome & Chromedriver."
+                    )
+                    print("You might want to manually check file handles.")
 
     def dynamic_get(self, url):
         self.selenium.get(url)
@@ -128,10 +133,12 @@ class BaseCachingClient:
         table = reader["Default"]
         ttl = table.get_fields("ttl")
         cache_time = table.get_fields("timestamp")
-        if datetime.now() > (parse(cache_time[0]) + timedelta(hours=int(ttl[0]))):
-            print(f"Data not within ttl")
+        try:
+            if datetime.now() > (parse(cache_time[0]) + timedelta(hours=int(ttl[0]))):
+                return False
+            return True
+        except ParserError:
             return False
-        return True
 
     def get_cached_data(self, filename):
         reader = SimpleRSTReader(self.filepath(filename))
@@ -205,5 +212,5 @@ class BaseClient(BaseRequestsClient, BaseSeleniumClient, BaseCachingClient):
             photo=self.get_photo(),
             new=self.use_status,
         )
-        self.cache_data(self.product_name, [product])
-        return (product,)
+        self.cache_data(self.filename, [product])
+        return product

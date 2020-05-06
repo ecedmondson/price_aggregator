@@ -11,6 +11,7 @@ class Amazon(BaseClient):
     def __init__(self, product_name, product_url):
         self.product_name = product_name
         self.product_url = product_url
+        self.filename = f"{self.source.lower()}_{self.product_name}"
         super().__init__()
         self.scraper.add(
             document=lambda: self.get(self.product_url),
@@ -30,16 +31,14 @@ class AmazonUsed(Amazon):
     source = "Amazon"
     use_status = "Used"
 
-    def __init__(self, product_name, product_url):
-        self.product_name = product_name
-        self.product_url = product_url
-        super().__init__()
-        self.scraper.add(
-            document=lambda: self.get(self.product_url),
-            soup=lambda: BeautifulSoup(self.document.text, features="html5lib"),
-        )
-
     def get_price(self):
         # usedBuySection only works with New products
-        return self.soup.find(id="price_inside_buybox").text.strip().replace("Buy used:", "")
+        return self.soup.find(id="usedBuySection").text.replace("Buy used:", "").strip()
+
+    def get_photo(self):
+        attrs = self.soup.find(id="landingImage").attrs
+        if "data-old-hires" not in attrs.keys():
+            return None
+        return attrs["data-old-hires"]
+
 

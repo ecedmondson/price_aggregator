@@ -1,5 +1,5 @@
 """Writing to RST file until we have a better solution."""
-
+import os
 HEADERS = ["Product Name", "Price", "Photo", "Timestamp", "TTL"]
 
 
@@ -48,9 +48,15 @@ class RSTWriter:
             rst += self.table_div(max_cols, header_flag)
         return rst
 
+    def normalize_filepath(self):
+        if not os.path.exists('assets/data'):
+            os.mkdir('assets/data')
+
     def write_table_to_file(self, filepath, grid, tablename="Product"):
         table = self.make_table(grid)
-        file = open(filepath, "a")
+        self.normalize_filepath()
+        print(filepath)
+        file = open(filepath, "w+")
         header_format = "-" * (len(tablename) + 1)
         file.write(f"{tablename}\n")
         file.write(f"{header_format}\n")

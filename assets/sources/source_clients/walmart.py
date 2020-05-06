@@ -12,6 +12,7 @@ class Walmart(BaseClient):
         self.product_name = product_name
         self.product_url = product_url
         self.product_img_alt = product_img_alt
+        self.filename = f"{self.source.lower()}_{self.product_name}"
         super().__init__()
         self.scraper.add(
             document=lambda: self.get(self.product_url),
