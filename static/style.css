@@ -41,18 +41,21 @@ body {
 *********************************/
 
 .listing {
-    border: solid black 2px;
+    border: solid black 1px;
+    border-radius: 3px;
     margin-top: 20px;
     margin-bottom: 20px;
+    background-color: rgb(255, 255, 255);
 }
 
 .listing-container {
     display: flex;
+
 }
 
 .listing-img-container {
-    max-width: 200px;
-    max-height: 200px;
+    max-width: 250px;
+    max-height: 250px;
     margin: 20px;
 }
 
@@ -64,3 +67,4 @@ body {
 .listing-info-container {
     margin: 20px;
 }
+
