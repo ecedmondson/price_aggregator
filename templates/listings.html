@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    {% for item in items %}
+
+        <div class="listing">
+            <div class="listing-container">
+                <div class="listing-img-container">
+                    <img src={{item.photo}} alt="">
+                </div>
+                <div class="listing-info-container">
+                    <div class="listing-name-container">
+                        <h2>{{item.name}}</h2>
+                    </div>
+                    <div class="listing-price-container">
+                        <h5>Price: {{item.price}}</h5>
+                    </div>
+                    <div class="listing-condition-container">
+                        <h5>Condition: {{item.new}}</h5>
+                    </div>
+                    <div class="listing-availability-container">
+                        <h5>Availability: {{item.instock}}</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% endfor %}
+{% endblock content %}
+
+<p>{{item.name}}</p>
+<p>{{item.source}}</p>
+<p>{{item.price}}</p>
+<p>{{item.photo}}</p>
+<p>{{item.instock}}</p>
+<p>{{item.new}}</p>
+<p>{{item.price_check}}</p>
