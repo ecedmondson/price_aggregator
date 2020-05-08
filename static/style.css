@@ -1,3 +1,10 @@
+
+/*********************************
+**********************************
+    Style for Homepage/Login
+**********************************
+*********************************/
+
 body {
     background: rgb(190, 190, 190);
 }
@@ -26,3 +33,38 @@ body {
 .form-signin button {
     margin-top: 50px;
 }
+
+/*********************************
+**********************************
+    Style for Listings
+**********************************
+*********************************/
+
+.listing {
+    border: solid black 1px;
+    border-radius: 3px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    background-color: rgb(255, 255, 255);
+}
+
+.listing-container {
+    display: flex;
+
+}
+
+.listing-img-container {
+    max-width: 250px;
+    max-height: 250px;
+    margin: 20px;
+}
+
+.listing-img-container img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.listing-info-container {
+    margin: 20px;
+}
+
