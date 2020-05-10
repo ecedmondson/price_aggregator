@@ -54,7 +54,13 @@ def cache(func):
 
     return wrapper
 
-
+# Selenium needed to be cached because
+# the web scraping clients only needed one
+# selenium instance to share among the
+# subclasses, instead of multiple instances
+# one for each subclass. Having multiple
+# instances caused too many chrome instances
+# running on flip.
 @cache
 def get_selenium_webdriver(cache_id=None):
     chrome_options = Options()
