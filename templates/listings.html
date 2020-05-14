@@ -1,31 +1,66 @@
 {% extends "layout.html" %}
 
 {% block content %}
-    {% for item in items %}
+    
+    <div class="listings-page-content">
 
-        <div class="listing">
-            <div class="listing-container">
-                <div class="listing-img-container">
-                    <img src={{item.photo}} alt="">
-                </div>
-                <div class="listing-info-container">
-                    <div class="listing-name-container">
-                        <h2>{{item.name}}</h2>
+        <div class="filter-container">
+            
+            <h4 class="filter-title">Filter Results</h4>
+
+            <div class="fitler-input-container">
+                <fieldset id="filter-stores" class="filter-fieldset">
+                    <legend>Stores</legend>
+                    <div>
+                        <input type="checkbox" name="filter-stores" id="filter-store-amazon" value="selected" checked>
+                        <label for="filter-store-amazon">Amazon</label>
                     </div>
-                    <div class="listing-price-container">
-                        <h5>Price: {{item.price}}</h5>
+                    <div>
+                        <input type="checkbox" name="filter-stores" id="filter-store-best-buy" value="selected" checked>
+                        <label for="filter-store-best-buy">Best Buy</label>
                     </div>
-                    <div class="listing-condition-container">
-                        <h5>Condition: {{item.new}}</h5>
+                    <div>
+                        <input type="checkbox" name="filter-stores" id="filter-store-compusa" value="selected" checked>
+                        <label for="filter-store-compusa">CompUSA</label>
                     </div>
-                    <div class="listing-availability-container">
-                        <h5>Availability: {{item.instock}}: {{item.source}}</h5>
+                    <div>
+                        <input type="checkbox" name="filter-stores" id="filter-store-walmart" value="selected" checked>
+                        <label for="filter-store-walmart">Walmart</label>
                     </div>
-                </div>
+                </fieldset>
             </div>
         </div>
 
-    {% endfor %}
+
+        <div class="results-content">
+
+            {% for item in items %}
+            <div class="listing">
+                <div class="listing-container">
+                    <div class="listing-img-container">
+                        <img src={{item.photo}} alt="">
+                    </div>
+                    <div class="listing-info-container">
+                        <div class="listing-name-container">
+                            <h2>{{item.name}}</h2>
+                        </div>
+                        <div class="listing-price-container">
+                            <h5>Price: {{item.price}}</h5>
+                        </div>
+                        <div class="listing-condition-container">
+                            <h5>Condition: {{item.new}}</h5>
+                        </div>
+                        <div class="listing-availability-container">
+                            <h5>Availability: {{item.instock}}: {{item.source}}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+
 {% endblock content %}
 
 <p>{{item.name}}</p>

@@ -1,4 +1,8 @@
 
+.container {
+    
+}
+
 /*********************************
 **********************************
     Style for Homepage/Login
@@ -40,6 +44,14 @@ body {
 **********************************
 *********************************/
 
+.results-content {
+    width: 100%;
+}
+
+.listings-page-content {
+    display: flex;
+}
+
 .listing {
     border: solid black 1px;
     border-radius: 3px;
@@ -50,7 +62,6 @@ body {
 
 .listing-container {
     display: flex;
-
 }
 
 .listing-img-container {
@@ -68,3 +79,10 @@ body {
     margin: 20px;
 }
 
+.filter-container {
+    border: solid black 2px;
+    margin: 40px;
+    width: 300px;
+    position: absolute;
+    left: 20px;
+}
