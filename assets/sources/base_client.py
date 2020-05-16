@@ -199,11 +199,12 @@ class BaseClient(BaseRequestsClient, BaseSeleniumClient, BaseCachingClient):
         return super().__getattribute__(item)
 
     def get_product(self):
-        if self.any_cached_data(self.product_name) and self.data_within_ttl(
-            self.product_name
+        if self.any_cached_data(self.filename) and self.data_within_ttl(
+            self.filename
         ):
-            price, photo, timestamp = self.get_cached_data(self.product_name)
+            price, photo, timestamp = self.get_cached_data(self.filename)
             return ScrapedProduct(
+                "Electronics", 
                 self.product_name,
                 self.source,
                 price,
@@ -212,6 +213,7 @@ class BaseClient(BaseRequestsClient, BaseSeleniumClient, BaseCachingClient):
                 price_check=parse(timestamp),
             )
         product = ScrapedProduct(
+            "Electronics",
             self.product_name,
             self.source,
             self.get_price(),

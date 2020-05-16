@@ -55,7 +55,6 @@ class RSTWriter:
     def write_table_to_file(self, filepath, grid, tablename="Product"):
         table = self.make_table(grid)
         self.normalize_filepath()
-        print(filepath)
         file = open(filepath, "w+")
         header_format = "-" * (len(tablename) + 1)
         file.write(f"{tablename}\n")
