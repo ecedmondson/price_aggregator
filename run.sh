@@ -2,10 +2,10 @@
 export PYTHONPATH=$PWD
 
 echo "Input venv name (default is venv):"
-read venvname
+#read venvname
 echo "Starting virtual env."
 
-source "$venvname/bin/activate"
+source "funt/bin/activate"
 pip3 install -r requirements.txt
 
 CHROME=$(python3 bin/chrome_compatibility.py --check 2>&1 >/dev/null)

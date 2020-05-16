@@ -16,7 +16,7 @@ class HPTouchScreenChromebook(BaseProduct):
         walmart,
         walmart_product_image_alt,
     )
-
+    product_type = 'Computer'
     def __init__(self):
         super().__init__()
         self.clients = self.get_clients()

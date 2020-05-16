@@ -1,10 +1,13 @@
 from flask import Flask, render_template, request, flash, redirect, url_for
 from database.db import Database
-from flask_login import LoginManager, login_user, logout_user, login_required, UserMixin
+from flask_login import LoginManager, login_user, logout_user, login_required, UserMixin, current_user
+from flask_login import AnonymousUserMixin
 from config import Config
 from forms import SignUpForm, LoginForm
 from assets.scraped_product import ScrapedProduct
 from assets.product_interface import ProductInterface
+import threading
+from datetime import datetime
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -14,15 +17,30 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
-class User(UserMixin):
-  def __init__(self,id):
-    self.id = id
+class Anonymous(AnonymousUserMixin):
+    def __init__(self):
+        self.name = 'Guest'
+
+login_manager.anonymous_user = Anonymous
 
 backend = ProductInterface()
 
+class User(UserMixin):
+  def __init__(self, email):
+    print("Instantiating...")
+    self.email = email
+    self.query = db.touch_email(email)
+    print(self.query)
+    self.id = self.query[0][1]
+    # self.first = self.query[2]
+    # self.last = self.query[3]
+    # self.name = f"{self.first} {self.last}"
+    # self.email = self.query[4]
+    # self.timestamp = datetime.now().isoformat()
+
+
 @app.route("/")
 def home():
-    print(db.findCustomer("hello123@gmail.com","12345678"))
     return render_template('home.html')
 
 
@@ -56,7 +74,6 @@ def login():
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
     form = SignUpForm()
-    print(request.method)
     if request.method == "POST":
         #add sign up logic
         if form.validate_on_submit():
@@ -111,8 +128,10 @@ class ProductDBInterface:
 interface = ProductDBInterface()
 
 @app.route("/listings")
+@login_required
 def listings():
     return render_template('listings.html', items=interface.read_products_from_db())
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True, host="0.0.0.0", port=4740)
+

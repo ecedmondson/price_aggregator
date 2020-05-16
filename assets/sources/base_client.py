@@ -75,16 +75,6 @@ def get_selenium_webdriver(cache_id=None):
     return webdriver.Chrome(chrome_options=chrome_options)
 
 
-@cache
-def killed(cache_id=None):
-    return True
-
-
-@cache
-def run_finally_block(cache_id=None):
-    return True
-
-
 class BaseSeleniumClient:
     def __init__(self):
         # google-chrome is installed on flip redhat osu servers
@@ -100,31 +90,22 @@ class BaseSeleniumClient:
 
     def __del__(self):
         try:
-            if "selenium_is_dead" not in results:
+            check = subprocess.Popen(
+                    "pgrep -lf chrome", shell=True, stdout=subprocess.PIPE
+            ).stdout
+            grep = check.read().decode("utf-8")
+            if str(self.pid_proc) in grep:
                 print("Trying to close Selenium Google Chrome Instance.")
                 self.selenium.close()
                 print(f"Trying to kill chromedriver pid at {self.pid_proc}.")
                 kill = subprocess.Popen(
                     f"kill {self.pid_proc}", shell=True, stdout=subprocess.PIPE
                 ).stdout
-                killed(cache_id="selenium_is_dead")
         except (ImportError, MaxRetryError) as e:
             print(
                 f"SELENIUM SHUTDOWN ERROR: highly recommended to manually pgrep for {self.pid_proc}."
             )
             print(f"Original Error:\n\t {type(e)}: {e}.")
-        finally:
-            if "selenium_finally_block" not in results:
-                run_finally_block(cache_id="selenium_finally_block")
-                check = subprocess.Popen(
-                    "pgrep -lf chrome", shell=True, stdout=subprocess.PIPE
-                ).stdout
-                grep = check.read().decode("utf-8")
-                if str(self.pid_proc) in grep:
-                    print(
-                        f"{self.pid_proc} found running after trying to kill Selenium Chrome & Chromedriver."
-                    )
-                    print("You might want to manually check file handles.")
 
     def dynamic_get(self, url):
         self.selenium.get(url)
@@ -159,6 +140,7 @@ class BaseCachingClient:
     def get_cached_data(self, filename):
         reader = SimpleRSTReader(self.filepath(filename))
         table = reader["Default"]
+        print("Retrieving cached data...")
         return (
             table.get_fields("price")[0],
             table.get_fields("photo")[0],

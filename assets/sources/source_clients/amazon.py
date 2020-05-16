@@ -27,18 +27,20 @@ class Amazon(BaseClient):
         try:
             return self.soup.find(id="price_inside_buybox").text.strip()
         except AttributeError:
-            aop = self.soup.find(id="priceblock_ourprice")
-            if aop:
-                return aop.text.strip()
+            r = self.soup.find(id="priceblock_ourprice_row")
+            if r:
+               r = r.text
+               s_ind = r.find('$')
+               e_ind = r.find('&')
+               return r[s_ind:e_ind].strip()
             return None
 
     def get_photo(self):
-        # parent is id="imgTagWrapperId
-        attrs = self.soup.find(id="landingImage").attrs
-        if "data-old-hires" not in attrs.keys():
-            return None
-        return attrs["data-old-hires"]
-
+        image = self.soup.find(id="landingImage")
+        try:
+            return image.attrs["data-old-hires"]
+        except (AttributeError, ValueError):
+            return image.attrs['src']
 
 class AmazonUsed(Amazon):
     """ A (hopefully) re-usable Amazon web-scraping client for used content."""
@@ -48,4 +50,6 @@ class AmazonUsed(Amazon):
 
     def get_price(self):
         # usedBuySection only works with New products
-        return self.soup.find(id="usedBuySection").text.replace("Buy used:", "").strip()
+        if not super().get_price():
+            return self.soup.find(id="usedBuySection").text.replace("Buy used:", "").strip()
+

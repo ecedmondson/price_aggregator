@@ -192,6 +192,10 @@ class Database():
         query = "SELECT * FROM Customers WHERE email = '" + email + "' AND password = '" + password +"';"
         return self.index(query)
 
+    def touch_email(self, email):
+        query = f'SELECT * FROM Customers where email = "{email}"';
+        return self.index(query)
+
     #If you want to add a retailer to the DB
     def insertRetailer(self, name, retailer_id = None):
         if(retailer_id == None):
