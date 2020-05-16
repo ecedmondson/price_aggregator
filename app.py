@@ -3,6 +3,7 @@ from database.db import Database
 from flask_login import LoginManager, login_user, logout_user, login_required, UserMixin
 from config import Config
 from forms import SignUpForm, LoginForm
+from assets.product_interface import ProductInterface
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -16,31 +17,19 @@ class User(UserMixin):
   def __init__(self,id):
     self.id = id
 
-items = [
-    {
-        'name': 'best buy_14DA0012DX_hp_chromebook',
-        'source': 'Best Buy',
-        'price': '$599.00',
-        'photo': 'https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6365/6365772_sd.jpg;maxHeight=640;maxWidth=550',
-        'instock': 'Likely In Stock, Check Retailer',
-        'new': 'New',
-        'price_check': '2020-04-30 18:38:19.752171',
-    },
-    {
-        'name': 'best buy_14DA0012DX_hp_chromebook',
-        'source': 'Best Buy',
-        'price': '$599.00',
-        'photo': 'https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6365/6365772_sd.jpg;maxHeight=640;maxWidth=550',
-        'instock': 'Likely In Stock, Check Retailer',
-        'new': 'New',
-        'price_check': '2020-04-30 18:38:19.752171',
-    },
-]
+backend = ProductInterface()
 
 @app.route("/")
 def home():
     print(db.findCustomer("hello123@gmail.com","12345678"))
     return render_template('home.html')
+
+
+@app.route("/resources/products", methods=["POST"])
+def search_products_api(**kwargs):
+    if request.method == 'POST':
+        return { f"{x['source'].lower()}_{x['name'].lower().replace(' ', '_')}": x for x in backend.get_products_by_filters(json=True, **request.json)}
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -109,7 +98,7 @@ def unauthorized():
     return redirect(url_for('login'))
 @app.route("/listings")
 def listings():
-    return render_template('listings.html', items=items)
+    return render_template('listings.html', items=backend.get_products_by_filters())
 
 if __name__ == '__main__':
     app.run()
