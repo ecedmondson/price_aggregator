@@ -54,71 +54,24 @@ def cache(func):
 
     return wrapper
 
-# Selenium needed to be cached because
-# the web scraping clients only needed one
-# selenium instance to share among the
-# subclasses, instead of multiple instances
-# one for each subclass. Having multiple
-# instances caused too many chrome instances
-# running on flip.
-@cache
-def get_selenium_webdriver(cache_id=None):
-    chrome_options = Options()
-    chrome_options.add_argument("--headless")
-    return webdriver.Chrome(chrome_options=chrome_options)
-
-
-@cache
-def killed(cache_id=None):
-    return True
-
-@cache
-def run_finally_block(cache_id=None):
-    return True
 
 class BaseSeleniumClient:
     def __init__(self):
         # google-chrome is installed on flip redhat osu servers
         # if you want to use something else locally, you will need
         # to configure this yourself
-        chrome_options = Options()
-        chrome_options.add_argument("--headless")
-        self.selenium = get_selenium_webdriver(
-            cache_id="base_client_selenium_webdriver"
-        )
-        self.pid_proc = self.selenium.service.process.pid
+        self.chrome_options = Options()
+        self.chrome_options.add_argument("--headless")
 
-    def __del__(self):
-        try:
-            if "selenium_is_dead" not in results:
-                print("Trying to close Selenium Google Chrome Instance.")
-                self.selenium.close()
-                print(f"Trying to kill chromedriver pid at {self.pid_proc}.")
-                kill = subprocess.Popen(
-                    f"kill {self.pid_proc}", shell=True, stdout=subprocess.PIPE
-                ).stdout
-                killed(cache_id="selenium_is_dead")
-        except (ImportError, MaxRetryError) as e:
-            print(
-                f"SELENIUM SHUTDOWN ERROR: highly recommended to manually pgrep for {self.pid_proc}."
-            )
-            print(f"Original Error:\n\t {type(e)}: {e}.")
-        finally:
-            if "selenium_finally_block" not in results:
-                run_finally_block(cache_id="selenium_finally_block")
-                check = subprocess.Popen(
-                    "pgrep -lf chrome", shell=True, stdout=subprocess.PIPE
-                ).stdout
-                grep = check.read().decode("utf-8")
-                if str(self.pid_proc) in grep:
-                    print(
-                        f"{self.pid_proc} found running after trying to kill Selenium Chrome & Chromedriver."
-                    )
-                    print("You might want to manually check file handles.")
-
+    def get_selenium_webdriver():
+        return webdriver.Chrome(chrome_options=self.chrome_options)
+    
     def dynamic_get(self, url):
-        self.selenium.get(url)
-        return self.selenium.page_source
+        selenium = self.get_selenium_webdriver()
+        selenium.get(url)
+        page_source = selenium.page_source
+        selenium.quit()
+        return page_source
 
 
 class BaseCachingClient:
