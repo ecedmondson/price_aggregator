@@ -64,6 +64,7 @@ def cache(func):
 @cache
 def get_selenium_webdriver(cache_id=None):
     chrome_options = Options()
+    chrome_options.add_argument("--user-agent=New User Agent")
     chrome_options.add_argument("--headless")
     return webdriver.Chrome(chrome_options=chrome_options)
 
@@ -82,6 +83,7 @@ class BaseSeleniumClient:
         # if you want to use something else locally, you will need
         # to configure this yourself
         chrome_options = Options()
+        chrome_options.add_argument("--user-agent=New User Agent")
         chrome_options.add_argument("--headless")
         self.selenium = get_selenium_webdriver(
             cache_id="base_client_selenium_webdriver"
