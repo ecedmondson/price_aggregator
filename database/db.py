@@ -10,9 +10,11 @@ from pymysql.err import InternalError, OperationalError, ProgrammingError
 #insertCustomer(f_name, l_name, email, password, customer_id = None)
 #insertRetailer(name, url, retailer_id = None)
 #insertProduct(name, brand, manuf_model, product_id = None)
-#insertProductFromRetailer(product_id, retailer_id)
+#updateDatabaseProducts(products)
 #getCustomers()
 #getProducts()
+#getProductsByName(name)
+#getProductsByRetailer(retailerName)
 #getRetailers()
 #getRetailers_Products()
 #findCustomer(email, password)
@@ -64,9 +66,9 @@ class Database():
 
         #Creates queries for each table
         createCustomers = "CREATE TABLE Customers (customer_id int NOT NULL, f_name varchar(255) NOT NULL,l_name varchar(255) NOT NULL, email varchar(255) NOT NULL, password varchar(255) NOT NULL, PRIMARY KEY(customer_id), UNIQUE KEY(email));"
-        createProducts = "CREATE TABLE Products (product_id int, name varchar(255), brand varchar(255), manuf_model varchar(255), PRIMARY KEY(product_id));"
-        createRetailers = "CREATE TABLE Retailers (retailer_id int, name varchar(255), url varchar(255), PRIMARY KEY(retailer_id), UNIQUE KEY(name, url));"
-        createRetailers_Products = "CREATE TABLE Retailers_Products (product_id int, retailer_id int, PRIMARY KEY (product_id, retailer_id), FOREIGN KEY (product_id) REFERENCES Products(product_id), FOREIGN KEY (retailer_id) REFERENCES Retailers(retailer_id))"
+        createProducts = "CREATE TABLE Products (product_id int, name varchar(255), PRIMARY KEY(product_id), UNIQUE KEY(name));"
+        createRetailers = "CREATE TABLE Retailers (retailer_id int, name varchar(255), PRIMARY KEY(retailer_id), UNIQUE KEY(name));"
+        createRetailers_Products = "CREATE TABLE Retailers_Products (product_id int, retailer_id int, price varchar(32), photo varchar(255), source varchar(255), instock varchar(32), new varchar(32), price_check varchar(64), PRIMARY KEY (product_id, retailer_id), FOREIGN KEY (product_id) REFERENCES Products(product_id), FOREIGN KEY (retailer_id) REFERENCES Retailers(retailer_id))"
 
         #Executes queries one table at a time
         try:
@@ -191,7 +193,7 @@ class Database():
         return self.index(query)
 
     #If you want to add a retailer to the DB
-    def insertRetailer(self, name, url, retailer_id = None):
+    def insertRetailer(self, name, retailer_id = None):
         if(retailer_id == None):
             #Gets last retailer entry and and sets the new retailer_id one higher
             lastRetailer = self.index("SELECT * FROM Retailers ORDER BY retailer_id DESC")
@@ -201,12 +203,12 @@ class Database():
                 retailer_id = 1
 
         #Forumlate query
-        query = "INSERT INTO Retailers (retailer_id, name, url) VALUES (" + str(retailer_id) + ",'" + str(name) + "','" + str(url) + "');"
+        query = "INSERT INTO Retailers (retailer_id, name) VALUES (" + str(retailer_id) + ",'" + str(name) + "');"
         #Send to DB
         self.add(query)
 
     #If you want to add a product to the DB
-    def insertProduct(self, name, brand, manuf_model, product_id = None):
+    def insertProduct(self, name, product_id = None):
         if(product_id == None):
             lastProduct = self.index("SELECT * FROM Products ORDER BY product_id DESC")
             if (lastProduct):
@@ -215,13 +217,27 @@ class Database():
                 product_id = 1
 
         #Formulate query
-        query = "INSERT INTO Products (product_id, name, brand, manuf_model) VALUES (" + str(product_id) + ",'" + str(name) + "','" + str(brand) + "','" + str(manuf_model) + "');"
+        query = "INSERT INTO Products (product_id, name) VALUES (" + str(product_id) + ",'" + str(name) + "');"
         #Send to DB
         self.add(query)
         
-    def insertProductFromRetailer(self, product_id, retailer_id):
-        query = "INSERT INTO Retailers_Products (product_id, retailer_id) VALUES (" + str(product_id) + "," + str(retailer_id) + ");"
-        self.add(query)
+    def updateDatabaseProducts(self, products):
+        try:
+            for x in products:
+                product = self.index("SELECT * FROM Products WHERE name='" + str(x.name) + "';")
+                if not product:
+                    self.insertProduct(x.name)
+                    product = self.index("SELECT * FROM Products WHERE name='" + str(x.name) + "';")
+                prodID = product[0][0]
+                retailer = self.index("SELECT * FROM Retailers WHERE name='" + str(x.source) + "';")
+                if not retailer:
+                    self.insertRetailer(x.source)
+                    retailer = self.index("SELECT * FROM Retailers WHERE name='" + str(x.source) + "';")
+                retID = retailer[0][0]
+                query = "REPLACE INTO Retailers_Products (product_id, retailer_id, price, photo, source, instock, new, price_check) VALUES (" + str(prodID) + "," + str(retID) + ",'"+str(x.price) +"','"+str(x.photo)+"','"+str(x.source)+"','"+str(x.instock)+"','"+str(x.new)+"','"+str(x.price_check)+"');"
+                self.add(query)
+        except Exception as e:
+            print(e)
 
     def getCustomers(self):
         query = "SELECT * FROM Customers"
@@ -229,6 +245,14 @@ class Database():
 
     def getProducts(self):
         query = "SELECT * FROM Products"
+        return self.index(query)
+    
+    def getProductsByName(self, name):
+        query = "SELECT * FROM Retailer_Products WHERE name='" + str(name) + "';"
+        return self.index(query)
+    
+    def getProductsByRetailer(self, retailerName):
+        query = "SELECT * FROM Retailer_Products WHERE source='" + str(retailerName) + "';"
         return self.index(query)
 
     def getRetailers(self):
