@@ -67,7 +67,6 @@ def cache(func):
 # one for each subclass. Having multiple
 # instances caused too many chrome instances
 # running on flip.
-@cache
 def get_selenium_webdriver(cache_id=None):
     chrome_options = Options()
     chrome_options.add_argument("--user-agent=New User Agent")
@@ -108,8 +107,9 @@ class BaseSeleniumClient:
             print(f"Original Error:\n\t {type(e)}: {e}.")
 
     def dynamic_get(self, url):
-        self.selenium.get(url)
-        return self.selenium.page_source
+        selenium = self.get_selenium_webdriver()
+        selenium.quit()
+        return page_source
 
 
 class BaseCachingClient:

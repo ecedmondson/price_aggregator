@@ -17,6 +17,7 @@ class ScrapedProduct:
         self.name = name
         self.source = source
         self.price = price
+        self.price_n = float(price.replace("$", ""))
         self.photo = photo or cfg.product_photo_default
         self.instock = instock or cfg.stock_default
         self.new = new or cfg.use_status
@@ -29,3 +30,8 @@ class ScrapedProduct:
                 for k, v in self.__dict__.items()
             ]
         )
+
+    def jsonify(self):
+        p = self.__dict__.copy()
+        del p['output']
+        return p

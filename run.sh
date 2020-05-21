@@ -5,7 +5,7 @@ echo "Input venv name (default is venv):"
 #read venvname
 echo "Starting virtual env."
 
-source "funt/bin/activate"
+source "newv/bin/activate"
 pip3 install -r requirements.txt
 
 CHROME=$(python3 bin/chrome_compatibility.py --check 2>&1 >/dev/null)

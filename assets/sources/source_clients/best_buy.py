@@ -1,6 +1,12 @@
 from assets.sources.base_client import BaseClient
 import bs4
 
+def get_docs(product_name):
+    if 'chromebook' in product_name:
+        f = open('assets/data/best_buy_chromebook.txt', 'r')
+        data = f.read()
+        f.close()
+        return data
 
 class BestBuy(BaseClient):
     source = "Best Buy"
@@ -11,8 +17,9 @@ class BestBuy(BaseClient):
         self.product_url = product_url
         self.filename = f"{self.source.lower()}_{self.product_name}"
         super().__init__()
+        # self.document = get_docs(self.product_name)
         self.scraper.add(
-            document=lambda: self.dynamic_get(self.product_url),
+            document=lambda: self.dynamic_get(product_url),
             soup=lambda: bs4.BeautifulSoup(self.document, features="html.parser"),
         )
 
@@ -36,3 +43,7 @@ class BestBuy(BaseClient):
 
     def get_photo(self):
         return self.soup.find(attrs={"class": "primary-image"}).attrs["src"]
+
+#b = BestBuy("blah_blah", "https://www.bestbuy.com/site/hp-2-in-1-14-touch-screen-chromebook-intel-core-i3-8gb-memory-64gb-emmc-flash-memory-white/6365772.p?skuId=6365772")
+# b = BestBuy("bt", "https://twitter.com/home")
+# print(b.get_product())

@@ -26,17 +26,15 @@ login_manager.anonymous_user = Anonymous
 backend = ProductInterface()
 
 class User(UserMixin):
-  def __init__(self, email):
+  def __init__(self, id):
+    self.id = id
     print("Instantiating...")
-    self.email = email
-    self.query = db.touch_email(email)
-    print(self.query)
-    self.id = self.query[0][1]
-    # self.first = self.query[2]
-    # self.last = self.query[3]
-    # self.name = f"{self.first} {self.last}"
-    # self.email = self.query[4]
-    # self.timestamp = datetime.now().isoformat()
+    self.query = db.touch_id(id)
+    self.first = self.query[0][1] if self.query else None
+    self.last = self.query[0][2] if self.query else None
+    self.name = f"{self.first} {self.last}" if self.query else 'Guest'
+    self.email = self.query[0][3] if self.query else None
+    self.timestamp = datetime.now().isoformat()
 
 
 @app.route("/")
@@ -52,6 +50,8 @@ def search_products_api(**kwargs):
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    print(current_user)
+    print(current_user.is_authenticated)
     form = LoginForm()
     if request.method == "POST":
         #add sign in logic
@@ -61,7 +61,8 @@ def login():
             # Make sure user email is already in the database
             existing_user = db.findCustomer(email, password)
             if existing_user:
-                login_user(User(email))
+                print(existing_user)
+                login_user(User(existing_user[0][0]))
                 flash('Login credentials received')
                 return redirect(url_for('home'))
             else: 
@@ -86,8 +87,9 @@ def signup():
             if existing_user:
                 flash('Email already exists, please log in or use a different email address.')
             else: 
-                login_user(User(email))
                 db.insertCustomer(fname, lname, email, password)
+                existing_user = db.findCustomer(email, password)
+                login_user(User(existing_user[0][0]))
                 flash('Login credentials received')
                 return redirect(url_for('home'))
     return render_template('signUp.html',
@@ -132,6 +134,6 @@ interface = ProductDBInterface()
 def listings():
     return render_template('listings.html', items=interface.read_products_from_db())
 
-if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0", port=4740)
+# if __name__ == '__main__':
+   #  app.run(debug=True, host="0.0.0.0", port=4740)
 

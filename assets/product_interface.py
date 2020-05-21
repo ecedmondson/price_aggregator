@@ -1,6 +1,6 @@
 from assets.products.product_clients.chromebook import HPTouchScreenChromebook
-from assets.products.product_clients.macbookair import MacBookAir2020
-from assets.sources.base_client import cache
+# from assets.products.product_clients.macbookair import MacBookAir2020
+from assets.sources.base_client import BaseContainer
 from itertools import chain
 from time import time
 
@@ -16,8 +16,20 @@ def list_from(item):
 class ProductInterface:
     """Interface object so that the UI can easily obtain filtered products."""
     def __init__(self):
-        self.all_products = [HPTouchScreenChromebook(), MacBookAir2020()]
+        self.container = BaseContainer()
+        self.container.add(
+            chrome=HPTouchScreenChromebook,
+        )
 
+        self.all_products = [self.chrome]
+    
+    def __getattr__(self, item):
+        if item not in ['container', 'all_products']:
+            item = self.container.__getattribute__(item)
+            print(item)
+            return item()
+        return super().__getattribute__(item)
+            
     def scrape(self, cache_id="interface_scrape"):
         print("DEBUG: retrieval of products...")
         start = time()
@@ -36,7 +48,6 @@ class ProductInterface:
         """
 
         all_products = self.scrape()
-        print(len(all_products))
         product_type = list_from(product_type) or []
         sources_to_exclude = list_from(sources_to_exclude) or []
         price_ceiling = price_ceiling or 0
@@ -46,21 +57,18 @@ class ProductInterface:
 
         def desirable(product):
             """Takes a ScrapedProduct object and returns user-desirability boolean."""
-            prod_chars = [getattr(product, x) for x in ["product_type", "source", "price_n", "new"]]
-            print(prod_chars)
-            print(sources_to_exclude)
-            print(exclude)
+            prod_chars = [getattr(product, x) for x in ["source", "price_n", "new"]]
             exclusion_matches = [
                 x in exclude if not isinstance(x, int) else x < price_ceiling
                 for x in prod_chars
             ]
-            print(exclusion_matches)
-            print(any(exclusion_matches))
             return any(exclusion_matches)
         
         filtered = list(filter(lambda p: not desirable(p), all_products)) 
-        print([x.jsonify() for x in filtered])
         if json:
             return [x.jsonify() for x in filtered]
         return filtered
 
+p = ProductInterface()
+print(p.scrape())
+print(p.get_products_by_filters())

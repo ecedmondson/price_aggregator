@@ -2,8 +2,9 @@
 
 {% block content %}
     <div class="wrapper">
-        <form method="POST" action="/login" class="form-signin" novalidate>
-            <h2 class="form-signin-heading text-center">Sign Up</h2>
+        {% if not current_user.is_authenticated %}
+         <form method="POST" action="/login" class="form-signin" novalidate>
+            <h2 class="form-signin-heading text-center">Login</h2>
             <!-- generates token used to protect from CSRF attacks, uses SECRET_KEY var -->
             {{ form.hidden_tag() }}
             <fieldset>
@@ -34,5 +35,8 @@
             <input type="password" class="form-control" name="password" placeholder="Password" required="" />
             <button class="btn btn-lg btn-primary btn-block">Login</button> -->
         </form>
+        {% else %}
+        <h3>Hey there {{ current_user.name }}! Thanks for logging in! Now you can use cool features, like Product Listings.</h3>
+        {% endif %}
     </div>
 {% endblock content %}
