@@ -6,7 +6,7 @@
 
         <div class="filter-container">
             
-            <h4 class="filter-title">Filter Results</h4>
+            <h4 class="filter-title">Filter</h4>
 
             <div class="fitler-input-container">
                 <fieldset id="filter-stores" class="filter-fieldset">
@@ -28,6 +28,33 @@
                         <label for="filter-store-walmart">Walmart</label>
                     </div>
                 </fieldset>
+            </div>
+
+            <div class="filter-input-container">
+                <fieldset class="filter-fieldset">
+                    <legend>Condition</legend>
+                    <div class="filter-input-element">
+                        <select name="filter-condition" id="filter-condition" class="filter-input">
+                            <option selected value="">Any</option>
+                            <option>New</option>
+                            <option>Used</option>
+                        </select>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="filter-input-container">
+                <fieldset class="filter-fieldset">
+                    <legend>Price</legend>
+                    <div class="filter-input-element">
+                        <input type="text" id="max-price" placeholder="max price">
+                        <input type="text" id="min-price" placeholder="min price">
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="filter-submit">
+                <button id="filter-submit-button">Apply</button>
             </div>
         </div>
 
@@ -62,11 +89,3 @@
     </div>
 
 {% endblock content %}
-
-<p>{{item.name}}</p>
-<p>{{item.source}}</p>
-<p>{{item.price}}</p>
-<p>{{item.photo}}</p>
-<p>{{item.instock}}</p>
-<p>{{item.new}}</p>
-<p>{{item.price_check}}</p>
