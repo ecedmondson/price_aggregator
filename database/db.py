@@ -1,5 +1,6 @@
 from flaskext.mysql import MySQL
 from pymysql.err import InternalError, OperationalError, ProgrammingError
+from passlib.context import CryptContext
 
 #Available functions:
 #--------------------
@@ -16,6 +17,12 @@ from pymysql.err import InternalError, OperationalError, ProgrammingError
 #getRetailers()
 #getRetailers_Products()
 #findCustomer(email, password)
+
+pwd_context = CryptContext(
+        schemes=["pbkdf2_sha256"],
+        default="pbkdf2_sha256",
+        pbkdf2_sha256__default_rounds=3000
+)
 
 class Database():
 
@@ -166,7 +173,6 @@ class Database():
             print("Could not execute query")
             print(e)
 
-
     #Inserts customer into database
     #Without a specific customer_id given, will generate one higher than last entry
     def insertCustomer(self, f_name, l_name, email, password, customer_id = None):
@@ -178,8 +184,10 @@ class Database():
             else: 
                 customer_id = 1
 
+        #Hash password
+        hashPass = pwd_context.encrypt(password)
         #Formulate query
-        query = "INSERT INTO Customers (customer_id, f_name, l_name, email, password) VALUES (" + str(customer_id) + ",'" + str(f_name) + "','" + str(l_name) + "','" + str(email) + "','" + str(password) + "');"
+        query = "INSERT INTO Customers (customer_id, f_name, l_name, email, password) VALUES (" + str(customer_id) + ",'" + str(f_name) + "','" + str(l_name) + "','" + str(email) + "','" + str(hashPass) + "');"
         #Send to DB
         self.add(query)
 
@@ -187,8 +195,15 @@ class Database():
     #Checks DB to see if customer exists, 
     #If customer exists, returns their data, else if they don't exist, return nothing
     def findCustomer(self, email, password):
-        query = "SELECT * FROM Customers WHERE email = '" + email + "' AND password = '" + password +"';"
-        return self.index(query)
+        query = "SELECT * FROM Customers WHERE email = '" + email + "';"
+        result = self.index(query)
+        if result:
+            if(pwd_context.verify(password, result[0][4])):
+                return result
+            else:
+                return None
+        else:
+            return None
 
     #If you want to add a retailer to the DB
     def insertRetailer(self, name, url, retailer_id = None):
