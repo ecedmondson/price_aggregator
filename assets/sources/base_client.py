@@ -2,6 +2,7 @@ from assets.config.config import cfg
 from assets.scraped_product import ScrapedProduct
 from assets.tools.tablewrite import HEADERS
 from assets.tools.tablewrite import RSTWriter
+from bs4 import BeautifulSoup
 from datetime import datetime
 from datetime import timedelta
 from dateutil.parser import parse
@@ -38,7 +39,11 @@ class BaseRequestsClient:
             r = rg(url, headers=headers, **kwargs)
             if r.status_code >= 200 and r.status_code < 300:
                 return r
-            return False
+            # If User Agent doesn't work, use backup
+            f = open(f"{cfg.backup_path}/{self.backup_path}", "r")
+            backup_text = f.read()
+            f.close()
+            return backup_text
 
 
 results = dict()
@@ -53,6 +58,7 @@ def cache(func):
         return result
 
     return wrapper
+
 
 # Selenium needed to be cached because
 # the web scraping clients only needed one
@@ -72,9 +78,11 @@ def get_selenium_webdriver(cache_id=None):
 def killed(cache_id=None):
     return True
 
+
 @cache
 def run_finally_block(cache_id=None):
     return True
+
 
 class BaseSeleniumClient:
     def __init__(self):
@@ -198,11 +206,23 @@ class BaseClient(BaseRequestsClient, BaseSeleniumClient, BaseCachingClient):
             return item()
         return super().__getattribute__(item)
 
-    def get_product(self):
-        if self.any_cached_data(self.product_name) and self.data_within_ttl(
-            self.product_name
-        ):
-            price, photo, timestamp = self.get_cached_data(self.product_name)
+    def data_cached_and_available(self):
+        """Returns True is there is data cached and it is within the timeout"""
+        return self.any_cached_data(self.filename) and self.data_within_ttl(
+            self.filename
+        )
+
+    def get_last_known_valid_cache(self, backup):
+        f = open(f"{cfg.backup_path}/{backup}", "r")
+        backup_text = f.read()
+        f.close()
+        self.scraper.document = lambda: backup_text
+        self.scraper.soup = lambda: BeautifulSoup(backup_text, features="html5lib")
+        return self.get_price(), self.get_photo()
+
+    def scraped_or_cached_product(self):
+        if self.data_cached_and_available():
+            price, photo, timestamp = self.get_cached_data(self.filename)
             return ScrapedProduct(
                 self.product_name,
                 self.source,
@@ -220,3 +240,16 @@ class BaseClient(BaseRequestsClient, BaseSeleniumClient, BaseCachingClient):
         )
         self.cache_data(self.filename, [product])
         return product
+
+    def get_product(self):
+        if not self.out_of_stock():
+            return self.scraped_or_cached_product()
+        price, photo = self.get_last_known_valid_cache(self.backup_file)
+        return ScrapedProduct(
+            self.product_name,
+            self.source,
+            price,
+            photo=photo,
+            new=self.use_status,
+            instock="Out of Stock (Last Known Price Listed)",
+        )

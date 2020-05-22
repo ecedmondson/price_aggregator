@@ -19,6 +19,12 @@ class CompUSA(BaseClient):
             soup=lambda: BeautifulSoup(self.document.text, features="html.parser"),
         )
 
+    def out_of_stock(self):
+        # Listings are removed completely if out of stock
+        if self.document:
+            return False
+        return True
+
     def get_price(self):
         """Should only be called from inside get_product()"""
         return self.soup.find_all(attrs={"class": "deal-price"})[0].text

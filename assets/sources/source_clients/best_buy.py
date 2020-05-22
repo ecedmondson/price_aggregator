@@ -16,6 +16,12 @@ class BestBuy(BaseClient):
             soup=lambda: bs4.BeautifulSoup(self.document, features="html.parser"),
         )
 
+    def out_of_stock(self):
+        add_to_cart_button = self.soup.find(
+            attrs={"class": "fulfillment-add-to-cart-button"}
+        )
+        return "Sold Out" in add_to_cart_button.text
+
     def get_price(self):
         price_boxes = self.soup.find_all(attrs={"class": "priceView-layout-large"})
         correct_box = [
