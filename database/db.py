@@ -68,7 +68,7 @@ class Database():
         createCustomers = "CREATE TABLE Customers (customer_id int NOT NULL, f_name varchar(255) NOT NULL,l_name varchar(255) NOT NULL, email varchar(255) NOT NULL, password varchar(255) NOT NULL, PRIMARY KEY(customer_id), UNIQUE KEY(email));"
         createProducts = "CREATE TABLE Products (product_id int, name varchar(255), PRIMARY KEY(product_id), UNIQUE KEY(name));"
         createRetailers = "CREATE TABLE Retailers (retailer_id int, name varchar(255), PRIMARY KEY(retailer_id), UNIQUE KEY(name));"
-        createRetailers_Products = "CREATE TABLE Retailers_Products (product_id int, retailer_id int, price varchar(32), photo varchar(255), source varchar(255), instock varchar(32), new varchar(32), price_check varchar(64), PRIMARY KEY (product_id, retailer_id), FOREIGN KEY (product_id) REFERENCES Products(product_id), FOREIGN KEY (retailer_id) REFERENCES Retailers(retailer_id))"
+        createRetailers_Products = "CREATE TABLE Retailers_Products (product_id int, retailer_id int, name varchar(64), price varchar(32), photo varchar(255), source varchar(255), instock varchar(32), new varchar(32), price_check varchar(64), PRIMARY KEY (product_id, retailer_id), FOREIGN KEY (product_id) REFERENCES Products(product_id), FOREIGN KEY (retailer_id) REFERENCES Retailers(retailer_id))"
 
         #Executes queries one table at a time
         try:
@@ -234,7 +234,7 @@ class Database():
                     self.insertRetailer(x.source)
                     retailer = self.index("SELECT * FROM Retailers WHERE name='" + str(x.source) + "';")
                 retID = retailer[0][0]
-                query = "REPLACE INTO Retailers_Products (product_id, retailer_id, price, photo, source, instock, new, price_check) VALUES (" + str(prodID) + "," + str(retID) + ",'"+str(x.price) +"','"+str(x.photo)+"','"+str(x.source)+"','"+str(x.instock)+"','"+str(x.new)+"','"+str(x.price_check)+"');"
+                query = "REPLACE INTO Retailers_Products (product_id, retailer_id, name, price, photo, source, instock, new, price_check) VALUES (" + str(prodID) + "," + str(retID) + ",'" + str(x.name) + "','"+ str(x.price) +"','"+str(x.photo)+"','"+str(x.source)+"','"+str(x.instock)+"','"+str(x.new)+"','"+str(x.price_check)+"');"
                 self.add(query)
         except Exception as e:
             print(e)
