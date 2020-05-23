@@ -24,16 +24,12 @@ class NewEgg(BaseClient):
 
     def get_price(self):
         """Should only be called from inside get_product()"""
-        f = open("newegg_macbook_air_2020_source.html", "w+")
-        f.write(self.document)
-        f.close()
-
-        text = self.soup.find_all(attrs={"id": "landingpage-price"})[0].text
-        ind = text.find("$")
-        return text[ind:]
+        text = self.soup.find(attrs={"id": "landingpage-price"}).contents[0].contents[0].contents
+        return text[-2].text
 
     def get_photo(self):
         """Should only be called form inside get_product()"""
         elements = self.soup.find_all(attrs={"class": "mainSlide"})[0].contents
         img = list(filter(lambda e: isinstance(e, Tag), elements))
         return img[0].attrs["src"]
+
