@@ -1,4 +1,8 @@
 
+.container {
+    
+}
+
 /*********************************
 **********************************
     Style for Homepage/Login
@@ -40,6 +44,14 @@ body {
 **********************************
 *********************************/
 
+.results-content {
+    width: 100%;
+}
+
+.listings-page-content {
+    display: flex;
+}
+
 .listing {
     border: solid black 1px;
     border-radius: 3px;
@@ -50,7 +62,6 @@ body {
 
 .listing-container {
     display: flex;
-
 }
 
 .listing-img-container {
@@ -68,3 +79,41 @@ body {
     margin: 20px;
 }
 
+.filter-container {
+    border: solid black 1px;
+    border-radius: 3px;
+    background-color: rgb(226, 226, 226);
+    margin: 40px;
+    width: 300px;
+    position: absolute;
+    left: 20px;
+    padding: 20px;
+}
+
+.filter-title {
+    text-align: center;
+    text-decoration: black underline;
+}
+
+.filter-submit {
+    text-align: center;
+    font-size: 20px;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;
+    border: none;
+    border-radius: 4px;
+}
+
+#filter-submit-button {
+    display: inline-block;
+}
+
+#filter-condition {
+    width: 50%;
+}
+
+#max-price, #min-price {
+    width: 45%;
+}
