@@ -183,20 +183,9 @@ def unauthorized():
     return redirect(url_for('login'))
 
 
-class ProductDBInterface:
-    def parse_sql_tuple(self, x):
-        return (ScrapedProduct(name = x[2], source = x[5], price = x[3], photo = x[4], instock= x[6], new = x[7], price_check= x[8]))
-
-    def read_products_from_db(self):
-        prod_tuple = db.getRetailers_Products()
-        products = [self.parse_sql_tuple(x) for x in prod_tuple]
-        return products
-
-interface = ProductDBInterface()
-
 @app.route("/listings")
 def listings():
-    return render_template('listings.html', items=interface.read_products_from_db())
+    return render_template('listings.html', items=interface.filter_products())
 
 if __name__ == '__main__':
     app.run()
