@@ -1,8 +1,5 @@
-from assets.products.product_clients.chromebook import HPTouchScreenChromebook
-# from assets.products.product_clients.macbookair import MacBookAir2020
-from assets.sources.base_client import BaseContainer
 from itertools import chain
-from time import time
+from app import db
 
 def list_from(item):
     if not item:
@@ -13,29 +10,18 @@ def list_from(item):
         return [item]
     return list(item)
 
-class ProductInterface:
-    """Interface object so that the UI can easily obtain filtered products."""
-    def __init__(self):
-        self.container = BaseContainer()
-        self.container.add(
-            chrome=HPTouchScreenChromebook,
-        )
 
-        self.all_products = [self.chrome]
-    
-    def __getattr__(self, item):
-        if item not in ['container', 'all_products']:
-            item = self.container.__getattribute__(item)
-            print(item)
-            return item()
-        return super().__getattribute__(item)
-            
-    def scrape(self, cache_id="interface_scrape"):
-        print("DEBUG: retrieval of products...")
-        start = time()
-        p = list(chain.from_iterable([x.products for x in self.all_products]))
-        print(f"Retrieval took {time() - start} seconds.")
-        return p
+class ProductDBInterface:
+    """Interface object so that the UI can easily obtain filtered products."""
+    def parse_sql_tuple(self, x):
+        return (ScrapedProduct(name = x[2], source = x[5], price = x[3], photo = x[4], instock= x[6], new = x[7], price_check= x[8]))
+
+    @property
+    def read_products_from_db(self):
+        prod_tuple = db.getRetailers_Products()
+        products = [self.parse_sql_tuple(x) for x in prod_tuple]
+        return products
+
 
     def get_products_by_filters(self, json=True, product_type=None, sources_to_exclude=None, price_ceiling=None, use_status=None):
         """Pass filters as kwargs
@@ -47,7 +33,7 @@ class ProductInterface:
             - use_status (str): use status, i.e. new or used
         """
 
-        all_products = self.scrape()
+        all_products = self.read_products_from_db
         product_type = list_from(product_type) or []
         sources_to_exclude = list_from(sources_to_exclude) or []
         price_ceiling = price_ceiling or 0
@@ -70,5 +56,5 @@ class ProductInterface:
         return filtered
 
 p = ProductInterface()
-print(p.scrape())
-print(p.get_products_by_filters())
+print(p.read_products_from_db)
+# print(p.get_products_by_filters())

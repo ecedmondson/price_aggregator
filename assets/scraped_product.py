@@ -15,9 +15,10 @@ class ScrapedProduct:
     ):
         self.output = "Scraped Product debug info: "
         self.name = name
+        self.readable_name = " ".join([x.upper() for x in self.name.split("_")[1:]])
         self.source = source
         self.price = price
-        self.price_n = float(price.replace("$", ""))
+        self.price_n = float(price.replace("$", "").replace(",", ""))
         self.photo = photo or cfg.product_photo_default
         self.instock = instock or cfg.stock_default
         self.new = new or cfg.use_status
