@@ -110,7 +110,7 @@ body {
     display: inline-block;
 }
 
-#filter-condition {
+#filter-condition, #filter-type {
     width: 50%;
 }
 
