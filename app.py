@@ -4,6 +4,7 @@ from flask_login import LoginManager, login_user, logout_user, login_required, U
 from config import Config
 from forms import SignUpForm, LoginForm
 from assets.scraped_product import ScrapedProduct
+from itertools import chain
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -91,14 +92,13 @@ class ProductDBInterface:
             return any(exclusion_matches)
 
         filtered = list(filter(lambda p: not desirable(p), all_products))
-        print(filtered)
         if json:
             return [x.jsonify() for x in filtered]
         return filtered
 
 interface = ProductDBInterface()
 
-def unique_json_key(p):
+def unique_json_key(x):
     """Returns a unique JSON Key based on ScrapedProduct data. Takes a JSON blob/dict."""
     return f"{x['source'].lower()}_{x['name'].lower().replace(' ', '_')}"
 
@@ -109,7 +109,8 @@ def search_products_api(**kwargs):
        product_type and that will need to be tested.
     """
     if request.method == 'POST':
-        return { unique_json_key(x): x for x in interface.filter_products(json=True, **request.json)}
+        filters = request.json or {}
+        return { unique_json_key(x): x for x in interface.filter_products(json=True, **filters)}
 
 @app.route("/")
 def home():
