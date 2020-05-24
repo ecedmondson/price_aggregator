@@ -3,11 +3,12 @@ from database.db import Database
 from flask_login import LoginManager, login_user, logout_user, login_required, UserMixin
 from config import Config
 from forms import SignUpForm, LoginForm
+from assets.scraped_product import ScrapedProduct
 
 app = Flask(__name__)
 app.config.from_object(Config)
 
-db = Database(app, "cs361_alberjes", ####)
+db = Database(app, "cs361_xxxxxxx", 'xxxx')
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
@@ -107,9 +108,22 @@ def unauthorized():
     """Redirect unauthorized users to Login page."""
     flash('You must be logged in to view that page.')
     return redirect(url_for('login'))
+
+
+class ProductDBInterface:
+    def parse_sql_tuple(self, x):
+        return (ScrapedProduct(name = x[2], source = x[5], price = x[3], photo = x[4], instock= x[6], new = x[7], price_check= x[8]))
+
+    def read_products_from_db(self):
+        prod_tuple = db.getRetailers_Products()
+        products = [self.parse_sql_tuple(x) for x in prod_tuple]
+        return products
+
+interface = ProductDBInterface()
+
 @app.route("/listings")
 def listings():
-    return render_template('listings.html', items=items)
+    return render_template('listings.html', items=interface.read_products_from_db())
 
 if __name__ == '__main__':
     app.run()
