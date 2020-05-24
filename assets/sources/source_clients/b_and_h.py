@@ -1,18 +1,18 @@
 from bs4 import BeautifulSoup
-from bs4.element import Tag
 from assets.sources.base_client import BaseClient
 
 
-class CompUSA(BaseClient):
+class BandH(BaseClient):
     """A (hopefully) re-usable CompUSA web scraping client."""
 
-    source = "CompUSA"
+    source = "B&H"
     use_status = "New"
 
     def __init__(self, product_name, product_url):
         self.product_name = product_name
         self.product_url = product_url
         self.filename = f"{self.source.lower()}_{self.product_name}"
+        self.backup_file = f"{self.product_name}/b_and_h.html"
         super().__init__()
         self.scraper.add(
             document=lambda: self.get(self.product_url),
@@ -20,19 +20,21 @@ class CompUSA(BaseClient):
         )
 
     def out_of_stock(self):
-        # Listings are removed completely if out of stock
-        if self.document:
-            return False
-        return True
+        return (
+            "More on the Way"
+            in self.soup.find(attrs={"data-selenium": "stockStatus"}).text
+        )
 
     def get_price(self):
+        f = open("b_and_h_macbook_air_2020_source.html", "w+")
+        f.write(self.document)
+        f.close()
+
         """Should only be called from inside get_product()"""
-        return self.soup.find_all(attrs={"class": "deal-price"})[0].text
+        return self.soup.find_all(attrs={"data-selenium": "pricingPrice"})[0].text
 
     def get_photo(self):
-        """Should only be called form inside get_product()"""
-        image_box = self.soup.find_all(attrs={"class": "product-image-slider"})[
+        """Should only be called from inside get_product()"""
+        return self.soup.find_all(attrs={"data-selenium": "inlineMediaMainImage"})[
             0
-        ].contents
-        image_div = list(filter(lambda d: isinstance(d, Tag), image_box))[0]
-        return image_div.attrs["src"]
+        ].attrs["src"]

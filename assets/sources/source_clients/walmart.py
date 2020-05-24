@@ -19,7 +19,14 @@ class Walmart(BaseClient):
             soup=lambda: BeautifulSoup(self.document.text, features="html.parser"),
         )
 
+    def out_of_stock(self):
+        return "Out of stock" in self.soup.find(attrs={"class": "product-atf"}).text
+
     def get_price(self):
+        f = open("walmart_macbook_air_2020_source.html", "w+")
+        f.write(self.document.text)
+        f.close()
+
         return f"${self.soup.find(id='price').text.split('$')[-1]}"
 
     def get_photo(self):
