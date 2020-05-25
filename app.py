@@ -18,26 +18,6 @@ class User(UserMixin):
   def __init__(self,id):
     self.id = id
 
-items = [
-    {
-        'name': 'best buy_14DA0012DX_hp_chromebook',
-        'source': 'Best Buy',
-        'price': '$599.00',
-        'photo': 'https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6365/6365772_sd.jpg;maxHeight=640;maxWidth=550',
-        'instock': 'Likely In Stock, Check Retailer',
-        'new': 'New',
-        'price_check': '2020-04-30 18:38:19.752171',
-    },
-    {
-        'name': 'best buy_14DA0012DX_hp_chromebook',
-        'source': 'Best Buy',
-        'price': '$599.00',
-        'photo': 'https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6365/6365772_sd.jpg;maxHeight=640;maxWidth=550',
-        'instock': 'Likely In Stock, Check Retailer',
-        'new': 'New',
-        'price_check': '2020-04-30 18:38:19.752171',
-    },
-]
 
 #####################
 # PRODUCT INTERFACE #
@@ -56,7 +36,7 @@ def list_from(item):
 class ProductDBInterface:
     """Interface object so that the UI can easily obtain filtered products."""
     def parse_sql_tuple(self, x):
-        return (ScrapedProduct(name = x[2], source = x[5], price = x[3], photo = x[4], instock= x[6], new = x[7], price_check= x[8]))
+        return (ScrapedProduct(name = x[2], source = x[5], price = x[3], product_type=x[9], photo = x[4], instock= x[6], new = x[7], price_check= x[8]))
 
     @property
     def read_products_from_db(self):
@@ -94,7 +74,7 @@ class ProductDBInterface:
 
         def desirable(product):
             """Takes a ScrapedProduct object and returns user-desirability boolean."""
-            prod_chars = [getattr(product, x) for x in ["source", "price_n", "new"]]
+            prod_chars = [getattr(product, x) for x in ["source", "price_n", "new", "product_type"]]
             exclusion_matches = [value_matches_filter(x) for x in prod_chars]
             return any(exclusion_matches)
 
@@ -197,10 +177,7 @@ def listings():
         data = request.form.to_dict()
         if not data['price_ceiling']:
             data['price_ceiling'] = 0
-        # Remove these print statements before submitting PR
-        print(data)
-        print(interface.filter_products(json=True, **data))
-        # return render_template('listings.html', items=interface.filter_products(**data))
+        return render_template('listings.html', items=interface.filter_products(**data))
     return render_template('listings.html', items=interface.filter_products())
 
 if __name__ == '__main__':
