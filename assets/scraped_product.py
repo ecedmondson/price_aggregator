@@ -11,7 +11,7 @@ class ScrapedProduct:
     """
 
     def __init__(
-        self, name, source, price, photo=None, instock=None, new=None, price_check=None
+        self, name, source, price, product_type, photo=None, instock=None, new=None, price_check=None
     ):
         self.output = "Scraped Product debug info: "
         self.name = name
@@ -23,7 +23,8 @@ class ScrapedProduct:
         self.instock = instock or cfg.stock_default
         self.new = new or cfg.use_status
         self.price_check = price_check or datetime.now()
-
+        self.product_type = product_type
+    
     def __str__(self):
         return "\n".join(
             [
