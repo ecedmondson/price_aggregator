@@ -7,24 +7,24 @@
         <div class="filter-container">
             
             <h4 class="filter-title">Filter</h4>
-
+           <form action="/listings" method="POST">
             <div class="fitler-input-container">
                 <fieldset id="filter-stores" class="filter-fieldset">
                     <legend>Stores</legend>
                     <div>
-                        <input type="checkbox" name="filter-stores" id="filter-store-amazon" value="selected" checked>
+                        <input type="checkbox" name="sources_to_exclude" id="filter-store-amazon" value="Amazon">
                         <label for="filter-store-amazon">Amazon</label>
                     </div>
                     <div>
-                        <input type="checkbox" name="filter-stores" id="filter-store-best-buy" value="selected" checked>
+                        <input type="checkbox" name="sources_to_exclude" id="filter-store-best-buy" value="Best Buy">
                         <label for="filter-store-best-buy">Best Buy</label>
                     </div>
                     <div>
-                        <input type="checkbox" name="filter-stores" id="filter-store-compusa" value="selected" checked>
+                        <input type="checkbox" name="sources_to_exclude" id="filter-store-compusa" value="CompUSA">
                         <label for="filter-store-compusa">CompUSA</label>
                     </div>
                     <div>
-                        <input type="checkbox" name="filter-stores" id="filter-store-walmart" value="selected" checked>
+                        <input type="checkbox" name="sources_to_exclude" id="filter-store-walmart" value="Walmart">
                         <label for="filter-store-walmart">Walmart</label>
                     </div>
                 </fieldset>
@@ -34,7 +34,7 @@
                 <fieldset class="filter-fieldset">
                     <legend>Condition</legend>
                     <div class="filter-input-element">
-                        <select name="filter-condition" id="filter-condition" class="filter-input">
+                        <select name="use_status" id="filter-condition" class="filter-input">
                             <option selected value="">Any</option>
                             <option>New</option>
                             <option>Used</option>
@@ -47,7 +47,7 @@
                 <fieldset class="filter-fieldset">
                     <legend>Product type</legend>
                     <div class="filter-input-element">
-                        <select name="filter-type" id="filter-type" class="filter-input">
+                        <select name="product_type" id="filter-type" class="filter-input">
                             <option selected value="">Any</option>
                             <option>Laptop</option>
                             <option>Tablet</option>
@@ -60,15 +60,15 @@
                 <fieldset class="filter-fieldset">
                     <legend>Price</legend>
                     <div class="filter-input-element">
-                        <input type="text" id="max-price" placeholder="max price">
-                        <input type="text" id="min-price" placeholder="min price">
+                        <input type="text" id="max-price" name="price_ceiling" placeholder="max price" value="">
                     </div>
                 </fieldset>
             </div>
 
             <div class="filter-submit">
-                <button id="filter-submit-button">Apply</button>
+               <input type="submit" class="filter-submit-button">
             </div>
+            </form>
         </div>
 
 

@@ -8,12 +8,12 @@ class Walmart(BaseClient):
     source = "Walmart"
     use_status = "New"
 
-    def __init__(self, product_name, product_url, product_img_alt):
+    def __init__(self, product_name, product_url, product_img_alt, **kwargs):
         self.product_name = product_name
         self.product_url = product_url
         self.product_img_alt = product_img_alt
         self.filename = f"{self.source.lower()}_{self.product_name}"
-        super().__init__()
+        super().__init__(**kwargs)
         self.scraper.add(
             document=lambda: self.get(self.product_url),
             soup=lambda: BeautifulSoup(self.document.text, features="html.parser"),

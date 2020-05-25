@@ -191,8 +191,16 @@ def unauthorized():
     return redirect(url_for('login'))
 
 
-@app.route("/listings")
+@app.route("/listings", methods=("GET", "POST"))
 def listings():
+    if request.method == "POST":
+        data = request.form.to_dict()
+        if not data['price_ceiling']:
+            data['price_ceiling'] = 0
+        # Remove these print statements before submitting PR
+        print(data)
+        print(interface.filter_products(json=True, **data))
+        # return render_template('listings.html', items=interface.filter_products(**data))
     return render_template('listings.html', items=interface.filter_products())
 
 if __name__ == '__main__':
