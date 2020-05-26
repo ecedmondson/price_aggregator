@@ -9,7 +9,7 @@ from itertools import chain
 app = Flask(__name__)
 app.config.from_object(Config)
 
-db = Database(app, "cs361_xxxxxxx", 'xxxx')
+db = Database(app, "cs361_edmondem", '3152')
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
@@ -22,6 +22,13 @@ class User(UserMixin):
 #####################
 # PRODUCT INTERFACE #
 #####################
+def is_iterable(item):
+    try:
+        iter(item)
+        return True
+    except TypeError:
+        return False
+
 
 def list_from(item):
     if not item:
@@ -45,7 +52,7 @@ class ProductDBInterface:
         return products
 
 
-    def filter_products(self, json=False, product_type=None, sources_to_exclude=None, price_ceiling=0, use_status=None):
+    def filter_products(self, json=False, product_type=None, sources_to_exclude=None, price_ceiling=0, use_status=None, **kwargs):
         """Pass filters as kwargs
         
         Filter options:
@@ -175,6 +182,8 @@ def unauthorized():
 def listings():
     if request.method == "POST":
         data = request.form.to_dict()
+        sources_to_exclude_keys = list(filter(lambda x: "sources_to_exclude" in x, list(data.keys())))
+        data["sources_to_exclude"] = [data[x] for x in sources_to_exclude_keys]
         if not data['price_ceiling']:
             data['price_ceiling'] = 0
         return render_template('listings.html', items=interface.filter_products(**data))
