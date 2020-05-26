@@ -188,11 +188,12 @@ class BaseContainer:
 class BaseClient(BaseRequestsClient, BaseSeleniumClient, BaseCachingClient):
     """BaseClient which all products inherit from"""
 
-    def __init__(self):
+    def __init__(self, product_type=None):
         super(BaseRequestsClient, self).__init__()
         super(BaseSeleniumClient, self).__init__()
         super(BaseCachingClient, self).__init__()
         self.scraper = BaseContainer()
+        self.product_type=product_type
 
     def __getattr__(self, item):
         # Overwriting __getattr__ allows us to set
@@ -229,6 +230,7 @@ class BaseClient(BaseRequestsClient, BaseSeleniumClient, BaseCachingClient):
                 self.product_name,
                 self.source,
                 price,
+                self.product_type,
                 photo=photo,
                 new=self.use_status,
                 price_check=parse(timestamp),
@@ -237,6 +239,7 @@ class BaseClient(BaseRequestsClient, BaseSeleniumClient, BaseCachingClient):
             self.product_name,
             self.source,
             self.get_price(),
+            self.product_type,
             photo=self.get_photo(),
             new=self.use_status,
         )
@@ -251,6 +254,7 @@ class BaseClient(BaseRequestsClient, BaseSeleniumClient, BaseCachingClient):
             self.product_name,
             self.source,
             price,
+            self.product_type,
             photo=photo,
             new=self.use_status,
             instock="Out of Stock (Last Known Price Listed)",

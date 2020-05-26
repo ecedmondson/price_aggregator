@@ -4,11 +4,12 @@ from flask_login import LoginManager, login_user, logout_user, login_required, U
 from config import Config
 from forms import SignUpForm, LoginForm
 from assets.scraped_product import ScrapedProduct
+from itertools import chain
 
 app = Flask(__name__)
 app.config.from_object(Config)
 
-db = Database(app, "cs361_xxxxxxx", 'xxxx')
+db = Database(app, "cs361_edmondem", '3152')
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
@@ -17,26 +18,93 @@ class User(UserMixin):
   def __init__(self,id):
     self.id = id
 
-items = [
-    {
-        'name': 'best buy_14DA0012DX_hp_chromebook',
-        'source': 'Best Buy',
-        'price': '$599.00',
-        'photo': 'https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6365/6365772_sd.jpg;maxHeight=640;maxWidth=550',
-        'instock': 'Likely In Stock, Check Retailer',
-        'new': 'New',
-        'price_check': '2020-04-30 18:38:19.752171',
-    },
-    {
-        'name': 'best buy_14DA0012DX_hp_chromebook',
-        'source': 'Best Buy',
-        'price': '$599.00',
-        'photo': 'https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6365/6365772_sd.jpg;maxHeight=640;maxWidth=550',
-        'instock': 'Likely In Stock, Check Retailer',
-        'new': 'New',
-        'price_check': '2020-04-30 18:38:19.752171',
-    },
-]
+
+#####################
+# PRODUCT INTERFACE #
+#####################
+def is_iterable(item):
+    try:
+        iter(item)
+        return True
+    except TypeError:
+        return False
+
+
+def list_from(item):
+    if not item:
+        return []
+    if isinstance(item, (str, dict)) or not is_iterable(
+        item
+    ):
+        return [item]
+    return list(item)
+
+
+class ProductDBInterface:
+    """Interface object so that the UI can easily obtain filtered products."""
+    def parse_sql_tuple(self, x):
+        return (ScrapedProduct(name = x[2], source = x[5], price = x[3], product_type=x[9], photo = x[4], instock= x[6], new = x[7], price_check= x[8]))
+
+    @property
+    def read_products_from_db(self):
+        prod_tuple = db.getRetailers_Products()
+        products = [self.parse_sql_tuple(x) for x in prod_tuple]
+        return products
+
+
+    def filter_products(self, json=False, product_type=None, sources_to_exclude=None, price_ceiling=0, use_status=None, **kwargs):
+        """Pass filters as kwargs
+        
+        Filter options:
+            - product_type (str): 'computer' or 'tablet'
+            - sources_to_exclude (str): a retailer, i.e. 'amazon'
+            - price_ceiling (int): highest price
+            - use_status (str): use status, i.e. new or used
+        """
+        all_products = self.read_products_from_db
+        product_type = list_from(product_type) or []
+        sources_to_exclude = list_from(sources_to_exclude) or []
+        price_ceiling = int(price_ceiling)
+        use_status = list_from(use_status) or []
+        # List typecast since chain is consumed upon iteration
+        exclude = list(chain(product_type, sources_to_exclude, use_status))
+        
+        def filter_price_ceiling(x):
+            if price_ceiling == 0:
+                return False
+            return x > price_ceiling
+
+        def value_matches_filter(x):
+            if isinstance(x, float):
+                return filter_price_ceiling(x)
+            return x in exclude
+
+        def desirable(product):
+            """Takes a ScrapedProduct object and returns user-desirability boolean."""
+            prod_chars = [getattr(product, x) for x in ["source", "price_n", "new", "product_type"]]
+            exclusion_matches = [value_matches_filter(x) for x in prod_chars]
+            return any(exclusion_matches)
+
+        filtered = list(filter(lambda p: not desirable(p), all_products))
+        if json:
+            return [x.jsonify() for x in filtered]
+        return filtered
+
+interface = ProductDBInterface()
+
+def unique_json_key(x):
+    """Returns a unique JSON Key based on ScrapedProduct data. Takes a JSON blob/dict."""
+    return f"{x['source'].lower()}_{x['name'].lower().replace(' ', '_')}"
+
+@app.route("/resources/products", methods=["POST"])
+def search_products_api(**kwargs):
+    """This endpoint makes it easier to test filtering.
+       Leaving it in for now because we still need to implement
+       product_type and that will need to be tested.
+    """
+    if request.method == 'POST':
+        filters = request.json or {}
+        return { unique_json_key(x): x for x in interface.filter_products(json=True, **filters)}
 
 @app.route("/")
 def home():
@@ -110,20 +178,16 @@ def unauthorized():
     return redirect(url_for('login'))
 
 
-class ProductDBInterface:
-    def parse_sql_tuple(self, x):
-        return (ScrapedProduct(name = x[2], source = x[5], price = x[3], photo = x[4], instock= x[6], new = x[7], price_check= x[8]))
-
-    def read_products_from_db(self):
-        prod_tuple = db.getRetailers_Products()
-        products = [self.parse_sql_tuple(x) for x in prod_tuple]
-        return products
-
-interface = ProductDBInterface()
-
-@app.route("/listings")
+@app.route("/listings", methods=("GET", "POST"))
 def listings():
-    return render_template('listings.html', items=interface.read_products_from_db())
+    if request.method == "POST":
+        data = request.form.to_dict()
+        sources_to_exclude_keys = list(filter(lambda x: "sources_to_exclude" in x, list(data.keys())))
+        data["sources_to_exclude"] = [data[x] for x in sources_to_exclude_keys]
+        if not data['price_ceiling']:
+            data['price_ceiling'] = 0
+        return render_template('listings.html', items=interface.filter_products(**data))
+    return render_template('listings.html', items=interface.filter_products())
 
 if __name__ == '__main__':
     app.run()

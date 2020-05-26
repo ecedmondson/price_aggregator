@@ -8,12 +8,12 @@ class BandH(BaseClient):
     source = "B&H"
     use_status = "New"
 
-    def __init__(self, product_name, product_url):
+    def __init__(self, product_name, product_url, **kwargs):
         self.product_name = product_name
         self.product_url = product_url
         self.filename = f"{self.source.lower()}_{self.product_name}"
         self.backup_file = f"{self.product_name}/b_and_h.html"
-        super().__init__()
+        super().__init__(**kwargs)
         self.scraper.add(
             document=lambda: self.get(self.product_url),
             soup=lambda: BeautifulSoup(self.document.text, features="html.parser"),

@@ -30,9 +30,9 @@ class MacBookAir2020(BaseProduct):
 
     def get_clients(self):
         return [
-            BestBuy(self.sub_name, self.best_buy),
-            NewEgg(self.sub_name, self.newegg),
-            Walmart(self.sub_name, *self.walmart_tuple),
-            Amazon(self.sub_name, self.amazon),
-            BandH(self.sub_name, self.bh),
+            BestBuy(self.sub_name, self.best_buy, product_type=self.product_type),
+            NewEgg(self.sub_name, self.newegg, product_type=self.product_type),
+            Walmart(self.sub_name, *self.walmart_tuple, product_type=self.product_type),
+            Amazon(self.sub_name, self.amazon, product_type=self.product_type),
+            BandH(self.sub_name, self.bh, product_type=self.product_type),
         ]
