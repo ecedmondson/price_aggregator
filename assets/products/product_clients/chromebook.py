@@ -17,6 +17,7 @@ class HPTouchScreenChromebook(BaseProduct):
         walmart_product_image_alt,
     )
     product_type = "Computer"
+    msrp="599"
     def __init__(self):
         super().__init__()
         self.clients = self.get_clients()
@@ -24,7 +25,7 @@ class HPTouchScreenChromebook(BaseProduct):
 
     def get_clients(self):
         return [
-            BestBuy(self.sub_name, self.best_buy, product_type=self.product_type),
-            Walmart(self.sub_name, *self.walmart_tuple, product_type=self.product_type),
-            Amazon(self.sub_name, self.amazon, product_type=self.product_type),
+            BestBuy(self.sub_name, self.best_buy, product_type=self.product_type, msrp=self.msrp),
+            Walmart(self.sub_name, *self.walmart_tuple, product_type=self.product_type, msrp=self.msrp),
+            Amazon(self.sub_name, self.amazon, product_type=self.product_type, msrp=self.msrp),
         ]

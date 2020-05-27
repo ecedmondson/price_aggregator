@@ -73,9 +73,9 @@ class Database():
 
         #Creates queries for each table
         createCustomers = "CREATE TABLE Customers (customer_id int NOT NULL, f_name varchar(255) NOT NULL,l_name varchar(255) NOT NULL, email varchar(255) NOT NULL, password varchar(255) NOT NULL, PRIMARY KEY(customer_id), UNIQUE KEY(email));"
-        createProducts = "CREATE TABLE Products (product_id int, name varchar(255), PRIMARY KEY(product_id), UNIQUE KEY(name));"
+        createProducts = "CREATE TABLE Products (product_id int, name varchar(255), msrp varchar(32), PRIMARY KEY(product_id), UNIQUE KEY(name));"
         createRetailers = "CREATE TABLE Retailers (retailer_id int, name varchar(255), PRIMARY KEY(retailer_id), UNIQUE KEY(name));"
-        createRetailers_Products = "CREATE TABLE Retailers_Products (product_id int, retailer_id int, name varchar(64), price varchar(32), photo varchar(255), source varchar(255), instock varchar(32), new varchar(32), price_check varchar(64), PRIMARY KEY (product_id, retailer_id), FOREIGN KEY (product_id) REFERENCES Products(product_id), FOREIGN KEY (retailer_id) REFERENCES Retailers(retailer_id))"
+        createRetailers_Products = "CREATE TABLE Retailers_Products (product_id int, retailer_id int, name varchar(64), price varchar(32), msrp varchar(32), photo varchar(255), source varchar(255), instock varchar(32), new varchar(32), price_check varchar(64), PRIMARY KEY (product_id, retailer_id), FOREIGN KEY (product_id) REFERENCES Products(product_id), FOREIGN KEY (retailer_id) REFERENCES Retailers(retailer_id))"
 
         #Executes queries one table at a time
         try:
@@ -223,7 +223,7 @@ class Database():
         self.add(query)
 
     #If you want to add a product to the DB
-    def insertProduct(self, name, product_id = None):
+    def insertProduct(self, name, msrp, product_id = None):
         if(product_id == None):
             lastProduct = self.index("SELECT * FROM Products ORDER BY product_id DESC")
             if (lastProduct):
@@ -232,7 +232,7 @@ class Database():
                 product_id = 1
 
         #Formulate query
-        query = "INSERT INTO Products (product_id, name) VALUES (" + str(product_id) + ",'" + str(name) + "');"
+        query = "INSERT INTO Products (product_id, name, msrp) VALUES (" + str(product_id) + ",'" + str(name) + "','" + str(msrp) + "');"
         #Send to DB
         self.add(query)
         
@@ -241,7 +241,7 @@ class Database():
             for x in products:
                 product = self.index("SELECT * FROM Products WHERE name='" + str(x.name) + "';")
                 if not product:
-                    self.insertProduct(x.name)
+                    self.insertProduct(x.name, x.msrp)
                     product = self.index("SELECT * FROM Products WHERE name='" + str(x.name) + "';")
                 prodID = product[0][0]
                 retailer = self.index("SELECT * FROM Retailers WHERE name='" + str(x.source) + "';")
@@ -249,7 +249,7 @@ class Database():
                     self.insertRetailer(x.source)
                     retailer = self.index("SELECT * FROM Retailers WHERE name='" + str(x.source) + "';")
                 retID = retailer[0][0]
-                query = "REPLACE INTO Retailers_Products (product_id, retailer_id, name, price, photo, source, instock, new, price_check) VALUES (" + str(prodID) + "," + str(retID) + ",'" + str(x.name) + "','"+ str(x.price) +"','"+str(x.photo)+"','"+str(x.source)+"','"+str(x.instock)+"','"+str(x.new)+"','"+str(x.price_check)+"');"
+                query = "REPLACE INTO Retailers_Products (product_id, retailer_id, name, price, msrp, photo, source, instock, new, price_check) VALUES (" + str(prodID) + "," + str(retID) + ",'" + str(x.name) + "','"+ str(x.price) +"','"+ str(x.msrp) +"','"+str(x.photo)+"','"+str(x.source)+"','"+str(x.instock)+"','"+str(x.new)+"','"+str(x.price_check)+"');"
                 self.add(query)
         except Exception as e:
             print(e)
