@@ -26,9 +26,6 @@ class BandH(BaseClient):
         )
 
     def get_price(self):
-        f = open("b_and_h_macbook_air_2020_source.html", "w+")
-        f.write(self.document)
-        f.close()
 
         """Should only be called from inside get_product()"""
         return self.soup.find_all(attrs={"data-selenium": "pricingPrice"})[0].text

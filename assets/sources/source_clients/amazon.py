@@ -43,7 +43,6 @@ class Amazon(BaseClient):
 class AmazonUsed(Amazon):
     """ A (hopefully) re-usable Amazon web-scraping client for used content."""
 
-    source = "Amazon"
     use_status = "Used"
 
     def get_price(self):
