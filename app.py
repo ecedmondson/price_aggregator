@@ -43,17 +43,17 @@ def list_from(item):
 class ProductDBInterface:
     """Interface object so that the UI can easily obtain filtered products."""
     def parse_sql_tuple(self, x):
-        return (ScrapedProduct(msrp = x[4], name = x[2], source = x[6], price = x[3], product_type=None, photo = x[5], instock= x[7], new = x[8], price_check= x[9]))
+        return (ScrapedProduct(msrp = x[4], name = x[2], source = x[6], price = x[3], product_type= x[10], photo = x[5], instock= x[7], new = x[8], price_check= x[9]))
+
+    def calculate_savings(self, product):
+        price = product.price[1:-3].replace(',', '')
+        product.savings = f"${int(product.msrp) - int(price)}"
 
     @property
     def read_products_from_db(self):
         prod_tuple = db.getRetailers_Products()
         products = [self.parse_sql_tuple(x) for x in prod_tuple]
-        for i in products:
-            #fiddle with price string to convert to int
-            price = i.price[1:-3].replace(',', '')
-            i.savings = int(i.msrp) - int(price)
-            i.savings = "$" + str(i.savings)
+        products = [self.calculate_savings(x) for x in products]
         return products
 
 

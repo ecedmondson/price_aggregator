@@ -17,6 +17,7 @@ class HPTouchScreenChromebook(BaseProduct):
         walmart_product_image_alt,
     )
     product_type = "Computer"
+    # HP no longer sells, MSRP taken from "was" price at https://www.bestbuy.com/site/hp-2-in-1-14-touch-screen-chromebook-intel-core-i3-8gb-memory-64gb-emmc-flash-memory-white/6365772.p?skuId=6365772
     msrp="599"
     def __init__(self):
         super().__init__()

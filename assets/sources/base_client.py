@@ -147,11 +147,7 @@ class BaseCachingClient:
     def data_within_ttl(self, filename, tablename="Product"):
         reader = SimpleRSTReader(self.filepath(filename))
         table = reader["Default"]
-        try:
-            ttl = table.get_fields("ttl")
-        except AttributeError:
-            # default to code logic suggesting data not in TTL
-            return False
+        ttl = table.get_fields("ttl")
         cache_time = table.get_fields("timestamp")
         try:
             if datetime.now() > (parse(cache_time[0]) + timedelta(hours=int(ttl[0]))):
