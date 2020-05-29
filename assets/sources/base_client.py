@@ -130,6 +130,9 @@ class BaseSeleniumClient:
         self.selenium.get(url)
         return self.selenium.page_source
 
+    def navigate_to_page(self, url):
+        """Navigates to page only. Does not return page source."""
+        self.selenium.get(url)
 
 class BaseCachingClient:
     # We can change this implementation, but
@@ -263,3 +266,13 @@ class BaseClient(BaseRequestsClient, BaseSeleniumClient, BaseCachingClient):
             new=self.use_status,
             instock="Out of Stock (Last Known Price Listed)",
         )
+
+class BaseMultiplesClient(BaseClient):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def get_product(self):
+        print(dir(self))
+        self.navigate_to_page(self.product_url)
+        return self.scrape()
+    
