@@ -16,7 +16,7 @@ class Skytech(BaseProduct):
     model = "ST-Arch3.0-0056-NE"
     sub_name = f"skytech_gaming_{model.replace('-', '_')}"
     product_type = 'Computer'
-
+    msrp="975"
     def __init__(self):
         super().__init__()
         self.clients = self.get_clients()
@@ -24,8 +24,8 @@ class Skytech(BaseProduct):
 
     def get_clients(self):
         return [
-            BestBuy(self.sub_name, self.best_buy),
-            NewEgg(self.sub_name, self.newegg),
-            STClient(self.sub_name, self.skytech_url),
-            Amazon(self.sub_name, self.amazon),
+            BestBuy(self.sub_name, self.best_buy, product_type=self.product_type),
+            NewEgg(self.sub_name, self.newegg, product_type=self.product_type),
+            STClient(self.sub_name, self.skytech_url, product_type=self.product_type),
+            Amazon(self.sub_name, self.amazon, product_type=self.product_type),
         ]

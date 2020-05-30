@@ -17,7 +17,7 @@ class MacBookAir2020(BaseProduct):
     bh = "https://www.bhphotovideo.com/c/product/1553858-REG/apple_mwtl2ll_a_13_3_macbook_air_with.html"
     newegg = "https://www.newegg.com/p/2SN-0001-014E4?Description=MWTL2LL%2fA&cm_re=MWTL2LL%2fA-_-2SN-0001-014E4-_-Product&quicklink=true"
     model = "MWTL2LL-A"
-    sub_name = "MWTL2LL-A_macbook_air_2020"
+    sub_name = "MWTL2LL-A_macbook_air"
     walmart_product_image_alt = "MacBook Air 2020 Gold"
     walmart_tuple = (
         walmart,
@@ -58,6 +58,7 @@ class MacBookAir2019(BaseProduct):
     model = "MVFH2LL-A"
     sub_name = "MVFH2LL-A_macbook_air_2019"
     product_type = "Computer"
+    msrp = "1099"
     walmart_product_image_alt = "Refurbished MаcBook Aіr"
     walmart_tuple = (
         walmart,
@@ -71,9 +72,9 @@ class MacBookAir2019(BaseProduct):
 
     def get_clients(self):
         return [
-            BestBuy(self.sub_name, self.best_buy),
-            Decluttr(self.sub_name, self.decluttr, self.decluttr_js),
-            WalmartRefurbished(self.sub_name, *self.walmart_tuple),
-            NewEggRefurbished(self.sub_name, self.newegg),
+            BestBuy(self.sub_name, self.best_buy, product_type=self.product_type),
+            Decluttr(self.sub_name, self.decluttr, self.decluttr_js, product_type=self.product_type),
+            WalmartRefurbished(self.sub_name, *self.walmart_tuple, product_type=self.product_type),
+            NewEggRefurbished(self.sub_name, self.newegg, product_type=self.product_type),
         ]
 
