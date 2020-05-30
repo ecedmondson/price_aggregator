@@ -5,11 +5,11 @@ class Decluttr(BaseMultiplesClient):
     source = "Decluttr"
     use_status = "Used"
 
-    def __init__(self, product_name, product_url, product_js):
+    def __init__(self, product_name, product_url, product_js, **kwargs):
         self.product_name = product_name
         self.product_url = product_url
         self.product_js = product_js
-        super().__init__()
+        super().__init__(**kwargs)
 
     def parse_web_element(self, element):
         def get_price(element):
@@ -22,7 +22,7 @@ class Decluttr(BaseMultiplesClient):
         def get_photo(element):
             image = element.find_element_by_tag_name("img")
             return image.get_attribute("src")
-        return ScrapedProduct(self.product_name, self.source, get_price(element), photo=get_photo(element), instock="In Stock", new=self.use_status)
+        return ScrapedProduct(self.product_name, self.source, get_price(element), self.product_type, photo=get_photo(element), instock="In Stock", new=self.use_status)
     
     def scrape(self):
         product_elements = self.selenium.execute_script(self.product_js)

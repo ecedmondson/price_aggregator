@@ -64,6 +64,7 @@ class Target(BaseMultiplesClient):
             self.product_name,
             self.source,
             price,
+            self.product_type,
             photo=photo,
             instock=stock(color, size),
             new=self.use_status,

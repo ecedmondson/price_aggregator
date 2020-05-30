@@ -21,7 +21,10 @@ class BestBuy(BaseClient):
         add_to_cart_button = self.soup.find(
             attrs={"class": "fulfillment-add-to-cart-button"}
         )
-        return "Sold Out" in add_to_cart_button.text
+        try:
+            return "Sold Out" in add_to_cart_button.text
+        except AttributeError:
+            return True
 
     def get_price(self):
         try:
