@@ -53,7 +53,8 @@ class ProductDBInterface:
     def read_products_from_db(self):
         prod_tuple = db.getRetailers_Products()
         products = [self.parse_sql_tuple(x) for x in prod_tuple]
-        products = [self.calculate_savings(x) for x in products]
+        for x in products:
+            self.calculate_savings(x)
         return products
 
 
