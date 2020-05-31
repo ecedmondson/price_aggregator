@@ -188,12 +188,13 @@ class BaseContainer:
 class BaseClient(BaseRequestsClient, BaseSeleniumClient, BaseCachingClient):
     """BaseClient which all products inherit from"""
 
-    def __init__(self, product_type=None):
+    def __init__(self, product_type=None, msrp=None):
         super(BaseRequestsClient, self).__init__()
         super(BaseSeleniumClient, self).__init__()
         super(BaseCachingClient, self).__init__()
         self.scraper = BaseContainer()
         self.product_type=product_type
+        self.msrp = msrp
 
     def __getattr__(self, item):
         # Overwriting __getattr__ allows us to set
@@ -227,6 +228,7 @@ class BaseClient(BaseRequestsClient, BaseSeleniumClient, BaseCachingClient):
         if self.data_cached_and_available():
             price, photo, timestamp = self.get_cached_data(self.filename)
             return ScrapedProduct(
+                self.msrp,
                 self.product_name,
                 self.source,
                 price,
@@ -236,6 +238,7 @@ class BaseClient(BaseRequestsClient, BaseSeleniumClient, BaseCachingClient):
                 price_check=parse(timestamp),
             )
         product = ScrapedProduct(
+            self.msrp,
             self.product_name,
             self.source,
             self.get_price(),
@@ -251,6 +254,7 @@ class BaseClient(BaseRequestsClient, BaseSeleniumClient, BaseCachingClient):
             return self.scraped_or_cached_product()
         price, photo = self.get_last_known_valid_cache(self.backup_file)
         return ScrapedProduct(
+            self.msrp,
             self.product_name,
             self.source,
             price,

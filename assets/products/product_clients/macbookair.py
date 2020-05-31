@@ -22,6 +22,8 @@ class MacBookAir2020(BaseProduct):
         walmart_product_image_alt,
     )
     product_type = "Computer"
+    # MSRP found at under Global Price Tab https://everymac.com/systems/apple/macbook-air/specs/macbook-air-core-i3-1.1-dual-core-13-retina-display-2020-scissor-specs.html#macspecs3
+    msrp = "1000"
 
     def __init__(self):
         super().__init__()
@@ -30,9 +32,9 @@ class MacBookAir2020(BaseProduct):
 
     def get_clients(self):
         return [
-            BestBuy(self.sub_name, self.best_buy, product_type=self.product_type),
-            NewEgg(self.sub_name, self.newegg, product_type=self.product_type),
-            Walmart(self.sub_name, *self.walmart_tuple, product_type=self.product_type),
-            Amazon(self.sub_name, self.amazon, product_type=self.product_type),
-            BandH(self.sub_name, self.bh, product_type=self.product_type),
+            BestBuy(self.sub_name, self.best_buy, product_type=self.product_type, msrp=self.msrp),
+            #NewEgg(self.sub_name, self.newegg, product_type=self.product_type, msrp=self.msrp),
+            Walmart(self.sub_name, *self.walmart_tuple, product_type=self.product_type, msrp=self.msrp),
+            Amazon(self.sub_name, self.amazon, product_type=self.product_type, msrp=self.msrp),
+            #BandH(self.sub_name, self.bh, product_type=self.product_type, msrp=self.msrp),
         ]
