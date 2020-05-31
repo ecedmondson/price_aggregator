@@ -249,7 +249,7 @@ class Database():
                     self.insertRetailer(x.source)
                     retailer = self.index("SELECT * FROM Retailers WHERE name='" + str(x.source) + "';")
                 retID = retailer[0][0]
-                query = "REPLACE INTO Retailers_Products (product_id, retailer_id, name, price, msrp, photo, source, instock, new, price_check, product_type) VALUES (" + str(prodID) + "," + str(retID) + ",'" + str(x.name) + "','"+ str(x.price) +"','"+ str(x.msrp) +"','"+str(x.photo)+"','"+str(x.source)+"','"+str(x.instock)+"','"+str(x.new)+"','"+str(x.price_check)+"','"+str(x.product_type)+"');"
+                query = "REPLACE INTO Retailers_Products (product_id, retailer_id, name, price, msrp, photo, source, instock, new, price_check, product_type) VALUES (" + str(prodID) + "," + str(retID) + ",'" + str(x.name) + "','"+ str(x.price).strip() +"','"+ str(x.msrp) +"','"+str(x.photo)+"','"+str(x.source)+"','"+str(x.instock).strip() +"','"+str(x.new)+"','"+str(x.price_check)+"','"+str(x.product_type)+"');"
                 self.add(query)
         except Exception as e:
             print(e)
