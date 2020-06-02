@@ -1,9 +1,13 @@
 {% extends "layout.html" %}
 
 {% block content %}
+    {% if current_user.is_authenticated %}
+        <p>Welcome back!</p>
+    {% else %}
     <div class="wrapper">
         <p>Welcome! Please login or signup to use our service!</p>
         <p><a href="/login">Login</a></p>
         <p><a href="/signup">Signup</a></p>
     </div>
+    {% endif %}
 {% endblock content %}
