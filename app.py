@@ -43,7 +43,7 @@ def list_from(item):
 class ProductDBInterface:
     """Interface object so that the UI can easily obtain filtered products."""
     def parse_sql_tuple(self, x):
-        return (ScrapedProduct(msrp = x[4], name = x[2], source = x[6], price = x[3], product_type= x[10], photo = x[5], instock= x[7], new = x[8], price_check= x[9]))
+        return (ScrapedProduct(msrp = x[4], name = x[2], source = x[6], price = x[3], product_type= x[10], photo = x[5], instock= x[7], new = x[8], price_check= x[9], product_link=x[11]))
 
     def calculate_savings(self, product):
         price = product.price[1:-3].replace(',', '')

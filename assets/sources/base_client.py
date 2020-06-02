@@ -239,7 +239,7 @@ class BaseClient(BaseRequestsClient, BaseSeleniumClient, BaseCachingClient):
                 photo=photo,
                 new=self.use_status,
                 price_check=parse(timestamp),
-                product_link=self.url,
+                product_link=self.product_url,
             )
         product = ScrapedProduct(
             self.msrp,
@@ -249,7 +249,7 @@ class BaseClient(BaseRequestsClient, BaseSeleniumClient, BaseCachingClient):
             self.product_type,
             photo=self.get_photo(),
             new=self.use_status,
-            product_link=self.url,
+            product_link=self.product_url,
         )
         self.cache_data(self.filename, [product])
         return product
@@ -267,7 +267,7 @@ class BaseClient(BaseRequestsClient, BaseSeleniumClient, BaseCachingClient):
             photo=photo,
             new=self.use_status,
             instock="Out of Stock (Last Known Price Listed)",
-            product_link=self.url,
+            product_link=self.product_url,
         )
 
 class BaseMultiplesClient(BaseClient):
