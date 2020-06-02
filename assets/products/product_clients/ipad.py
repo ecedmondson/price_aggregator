@@ -27,9 +27,9 @@ class iPadPro11InchSilver128GB2020(BaseProduct):
 
     def get_clients(self):
         return [ 
-            BestBuy(self.sub_name, self.best_buy, product_type=self.product_type),
-            BandH(self.sub_name, self.b_and_h, product_type=self.product_type),
-            Target(self.sub_name, self.target, *self.target_keys, product_type=self.product_type),
-            Walmart(self.sub_name, self.walmart, self.walmart_img_alt, product_type=self.product_type)
+            BestBuy(self.sub_name, self.best_buy, product_type=self.product_type, msrp=self.msrp),
+            BandH(self.sub_name, self.b_and_h, product_type=self.product_type, msrp=self.msrp),
+            Target(self.sub_name, self.target, *self.target_keys, product_type=self.product_type, msrp=self.msrp),
+            Walmart(self.sub_name, self.walmart, self.walmart_img_alt, product_type=self.product_type, msrp=self.msrp)
         ]
 

@@ -24,8 +24,8 @@ class Skytech(BaseProduct):
 
     def get_clients(self):
         return [
-            BestBuy(self.sub_name, self.best_buy, product_type=self.product_type),
-            NewEgg(self.sub_name, self.newegg, product_type=self.product_type),
-            STClient(self.sub_name, self.skytech_url, product_type=self.product_type),
-            Amazon(self.sub_name, self.amazon, product_type=self.product_type),
+            BestBuy(self.sub_name, self.best_buy, product_type=self.product_type, msrp=self.msrp), 
+            NewEgg(self.sub_name, self.newegg, product_type=self.product_type, msrp=self.msrp),
+            STClient(self.sub_name, self.skytech_url, product_type=self.product_type, msrp=self.msrp),
+            Amazon(self.sub_name, self.amazon, product_type=self.product_type, msrp=self.msrp),
         ]

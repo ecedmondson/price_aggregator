@@ -35,10 +35,10 @@ class MacBookAir2020(BaseProduct):
     def get_clients(self):
         return [
             BestBuy(self.sub_name, self.best_buy, product_type=self.product_type, msrp=self.msrp),
-            #NewEgg(self.sub_name, self.newegg, product_type=self.product_type, msrp=self.msrp),
+            NewEgg(self.sub_name, self.newegg, product_type=self.product_type, msrp=self.msrp),
             Walmart(self.sub_name, *self.walmart_tuple, product_type=self.product_type, msrp=self.msrp),
             Amazon(self.sub_name, self.amazon, product_type=self.product_type, msrp=self.msrp),
-            #BandH(self.sub_name, self.bh, product_type=self.product_type, msrp=self.msrp),
+            BandH(self.sub_name, self.bh, product_type=self.product_type, msrp=self.msrp),
         ]
 
 # Decluttr sells refurbished products.
@@ -72,9 +72,9 @@ class MacBookAir2019(BaseProduct):
 
     def get_clients(self):
         return [
-            BestBuy(self.sub_name, self.best_buy, product_type=self.product_type),
-            Decluttr(self.sub_name, self.decluttr, self.decluttr_js, product_type=self.product_type),
-            WalmartRefurbished(self.sub_name, *self.walmart_tuple, product_type=self.product_type),
-            NewEggRefurbished(self.sub_name, self.newegg, product_type=self.product_type),
+            BestBuy(self.sub_name, self.best_buy, product_type=self.product_type, msrp=self.msrp),
+            Decluttr(self.sub_name, self.decluttr, self.decluttr_js, product_type=self.product_type, msrp=self.msrp),
+            WalmartRefurbished(self.sub_name, *self.walmart_tuple, product_type=self.product_type, msrp=self.msrp),
+            NewEggRefurbished(self.sub_name, self.newegg, product_type=self.product_type, msrp=self.msrp),
         ]
 
