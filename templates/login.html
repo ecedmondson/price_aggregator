@@ -3,12 +3,11 @@
 {% block content %}
     <div class="wrapper">
         <form method="POST" action="/login" class="form-signin" novalidate>
-            <h2 class="form-signin-heading text-center">Sign Up</h2>
+            <h2 class="form-signin-heading text-center">Login</h2>
             <!-- generates token used to protect from CSRF attacks, uses SECRET_KEY var -->
             {{ form.hidden_tag() }}
             <fieldset>
-                {{ form.email.label }}
-                {{ form.email(placeholder='youremail@example.com') }}
+                {{ form.email(placeholder='youremail@example.com', class="form-control") }}
                 {% if form.email.errors %}
                   <ul>
                     {% for error in form.email.errors %}<li>{{ error }}</li>{% endfor %}
@@ -17,8 +16,7 @@
               </fieldset>
         
               <fieldset>
-                {{ form.password.label }}
-                {{ form.password }}
+                {{ form.password (placeholder='Password', class="form-control")}}
                 {% if form.password.errors %}
                   <ul>
                     {% for error in form.password.errors %}<li>{{ error }}</li>{% endfor %}
@@ -26,8 +24,8 @@
                 {% endif %}
               </fieldset>
 
-              <div class="submitbutton">
-                <input id="submit" type="submit" value="Submit">
+              <div>
+                <button class="btn btn-lg btn-primary btn-block" id="submit" type="submit" value="Login">Login</button>
               </div>
             <!-- <div class="form-control">{{ form.email.label }} {{ form.email }}</div>
             <input type="password" class="form-control" name="password" placeholder="Password" required="" />

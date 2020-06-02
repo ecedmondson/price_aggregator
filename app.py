@@ -53,7 +53,8 @@ class ProductDBInterface:
     def read_products_from_db(self):
         prod_tuple = db.getRetailers_Products()
         products = [self.parse_sql_tuple(x) for x in prod_tuple]
-        products = [self.calculate_savings(x) for x in products]
+        for x in products:
+            self.calculate_savings(x)
         return products
 
 
@@ -102,6 +103,7 @@ def unique_json_key(x):
     return f"{x['source'].lower()}_{x['name'].lower().replace(' ', '_')}"
 
 @app.route("/resources/products", methods=["POST"])
+@login_required
 def search_products_api(**kwargs):
     """This endpoint makes it easier to test filtering.
        Leaving it in for now because we still need to implement
@@ -113,7 +115,6 @@ def search_products_api(**kwargs):
 
 @app.route("/")
 def home():
-    print(db.findCustomer("hello123@gmail.com","12345678"))
     return render_template('home.html')
 
 @app.route("/login", methods=["GET", "POST"])
@@ -129,7 +130,7 @@ def login():
             if existing_user:
                 login_user(User(email))
                 flash('Login credentials received')
-                return redirect(url_for('home'))
+                return redirect(url_for('listings'))
             else: 
                 flash('Email does not exist. Please create an account.')
     return render_template('login.html',
@@ -156,7 +157,7 @@ def signup():
                 login_user(User(email))
                 db.insertCustomer(fname, lname, email, password)
                 flash('Login credentials received')
-                return redirect(url_for('home'))
+                return redirect(url_for('listings'))
     return render_template('signUp.html',
                             title='Create and Account.',
                             form=form)
@@ -184,6 +185,7 @@ def unauthorized():
 
 
 @app.route("/listings", methods=("GET", "POST"))
+@login_required
 def listings():
     if request.method == "POST":
         data = request.form.to_dict()

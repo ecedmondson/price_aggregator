@@ -7,8 +7,7 @@
             <!-- generates token used to protect from CSRF attacks, uses SECRET_KEY var -->
             {{ form.hidden_tag() }}
             <fieldset>
-                {{form.fname.label}}
-                {{form.fname(placeholder="John")}}
+                {{form.fname(placeholder='Jane', class="form-control")}}
                 {% if form.fname.errors %}
                     <ul>
                         {% for error in form.fname.errors %}<li>{{error}}</li>{% endfor %}
@@ -17,8 +16,7 @@
             </fieldset>
 
             <fieldset>
-                {{form.lname.label}}
-                {{form.lname(placeholder="Smith")}}
+                {{form.lname(placeholder='Smith', class="form-control")}}
                 {% if form.lname.errors %}
                     <ul>
                         {% for error in form.lname.errors %}<li>{{error}}</li>{% endfor %}
@@ -27,8 +25,7 @@
             </fieldset>
 
             <fieldset>
-                {{ form.email.label }}
-                {{ form.email(placeholder='youremail@example.com') }}
+                {{ form.email(placeholder='Email', class="form-control") }}
                 {% if form.email.errors %}
                   <ul>
                     {% for error in form.email.errors %}<li>{{ error }}</li>{% endfor %}
@@ -37,8 +34,7 @@
               </fieldset>
         
               <fieldset>
-                {{ form.password.label }}
-                {{ form.password }}
+                {{ form.password(placeholder='Password', class="form-control")}}
                 {% if form.password.errors %}
                   <ul>
                     {% for error in form.password.errors %}<li>{{ error }}</li>{% endfor %}
@@ -47,7 +43,7 @@
               </fieldset>
 
               <div class="submitbutton">
-                <input id="submit" type="submit" value="Submit">
+                <button class="btn btn-lg btn-primary btn-block" id="submit" type="submit" value="Signup">Signup</button>
               </div>
             <!-- <div class="form-control">{{ form.email.label }} {{ form.email }}</div>
             <input type="password" class="form-control" name="password" placeholder="Password" required="" />
