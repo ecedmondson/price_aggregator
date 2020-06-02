@@ -11,7 +11,7 @@ class BestBuy(BaseClient):
         self.product_url = product_url
         self.filename = f"{self.source.lower()}_{self.product_name}"
         self.backup_file=f"{self.product_name}/{self.source.lower().replace(' ', '_')}.html"
-        super().__init__()
+        super().__init__(**kwargs)
         self.scraper.add(
             document=lambda: self.dynamic_get(self.product_url),
             soup=lambda: bs4.BeautifulSoup(self.document, features="html.parser"),

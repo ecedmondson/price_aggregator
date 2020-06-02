@@ -272,7 +272,6 @@ class BaseMultiplesClient(BaseClient):
         super().__init__(*args, **kwargs)
 
     def get_product(self):
-        print(dir(self))
         self.navigate_to_page(self.product_url)
         return self.scrape()
     

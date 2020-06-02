@@ -14,7 +14,7 @@ class Walmart(BaseClient):
         self.product_img_alt = product_img_alt
         self.filename = f"{self.source.lower()}_{self.product_name}"
         self.backup_file=f"{self.product_name}/{self.source.lower().replace(' ', '_')}.html"
-        super().__init__()
+        super().__init__(**kwargs)
         self.scraper.add(
             document=lambda: self.get(self.product_url),
             soup=lambda: BeautifulSoup(self.document.text, features="html.parser"),

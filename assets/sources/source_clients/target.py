@@ -61,6 +61,7 @@ class Target(BaseMultiplesClient):
             return "In Stock"
 
         return ScrapedProduct(
+            self.msrp,
             self.product_name,
             self.source,
             price,

@@ -22,7 +22,7 @@ class Decluttr(BaseMultiplesClient):
         def get_photo(element):
             image = element.find_element_by_tag_name("img")
             return image.get_attribute("src")
-        return ScrapedProduct(self.product_name, self.source, get_price(element), self.product_type, photo=get_photo(element), instock="In Stock", new=self.use_status)
+        return ScrapedProduct(self.msrp, self.product_name, self.source, get_price(element), self.product_type, photo=get_photo(element), instock="In Stock", new=self.use_status)
     
     def scrape(self):
         product_elements = self.selenium.execute_script(self.product_js)
