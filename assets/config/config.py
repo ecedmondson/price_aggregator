@@ -7,7 +7,7 @@ class GeneralUseConfig:
     stock_default = "Likely In Stock, Check Retailer"
     use_status = "Likely New, Check Retailer"
     cache_path = "assets/data/"
-    backup_path = "/tmp/backups/"
+    backup_path = "/tmp/backups"
 
 
 cfg = GeneralUseConfig()

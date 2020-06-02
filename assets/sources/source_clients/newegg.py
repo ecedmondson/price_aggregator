@@ -32,3 +32,10 @@ class NewEgg(BaseClient):
         elements = self.soup.find_all(attrs={"class": "mainSlide"})[0].contents
         img = list(filter(lambda e: isinstance(e, Tag), elements))
         return img[0].attrs["src"]
+
+class NewEggRefurbished(NewEgg):
+    use_status = "Used"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
