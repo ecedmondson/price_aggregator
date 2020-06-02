@@ -25,7 +25,7 @@ class Skytech(BaseClient):
 
     def get_price(self):
         """Should only be called from inside get_product()"""
-        return f'${self.soup.find(attrs={"class": "woocommerce-Price-amount"}).text}'
+        return f'{self.soup.find(attrs={"class": "woocommerce-Price-amount"}).text}'
 
     def get_photo(self):
         """Should only be called from inside get_product()"""
