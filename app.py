@@ -9,7 +9,7 @@ from itertools import chain
 app = Flask(__name__)
 app.config.from_object(Config)
 
-db = Database(app, "cs361_edmondem", '3152')
+db = Database(app, "cs361_alberjes", '3526')
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
@@ -43,12 +43,17 @@ def list_from(item):
 class ProductDBInterface:
     """Interface object so that the UI can easily obtain filtered products."""
     def parse_sql_tuple(self, x):
-        return (ScrapedProduct(name = x[2], source = x[5], price = x[3], product_type=x[9], photo = x[4], instock= x[6], new = x[7], price_check= x[8]))
+        return (ScrapedProduct(msrp = x[4], name = x[2], source = x[6], price = x[3], product_type= x[10], photo = x[5], instock= x[7], new = x[8], price_check= x[9]))
+
+    def calculate_savings(self, product):
+        price = product.price[1:-3].replace(',', '')
+        product.savings = f"${int(product.msrp) - int(price)}"
 
     @property
     def read_products_from_db(self):
         prod_tuple = db.getRetailers_Products()
         products = [self.parse_sql_tuple(x) for x in prod_tuple]
+        products = [self.calculate_savings(x) for x in products]
         return products
 
 
