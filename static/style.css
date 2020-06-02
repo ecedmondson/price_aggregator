@@ -94,6 +94,7 @@ body {
     min-width: 20%;
     left: 20px;
     padding: 20px;
+    height: max-content;
 }
 
 .filter-title {
