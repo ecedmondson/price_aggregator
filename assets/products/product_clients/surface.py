@@ -15,7 +15,8 @@ class MicrosoftSurface(BaseProduct):
     walmart_product_image_alt = "Microsoft VDV-00001"
 
     product_type = "Tablet"
-    msrp = "799"
+    #https://www.microsoft.com/en-us/p/surface-pro-7/8n17j0m5zzqs?activetab=overview&ranMID=24542&ranEAID=yr7LsPS5ySE&ranSiteID=yr7LsPS5ySE-LYuEGrD7TqnnAwRbegLCeg&epi=yr7LsPS5ySE-LYuEGrD7TqnnAwRbegLCeg&irgwc=1&OCID=AID2000142_aff_7593_1243925&tduid=%28ir__pxvan2txe9kftmdckk0sohzg2u2xnqsmjt0pbkfq00%29%287593%29%281243925%29%28yr7LsPS5ySE-LYuEGrD7TqnnAwRbegLCeg%29%28%29&irclickid=_pxvan2txe9kftmdckk0sohzg2u2xnqsmjt0pbkfq00
+    msrp = "749"
 
     def __init__(self):
         super().__init__()
@@ -24,7 +25,7 @@ class MicrosoftSurface(BaseProduct):
 
     def get_clients(self):
         return [
-            NewEgg(self.sub_name, self.amazon, product_type=self.product_type, msrp=self.msrp),
+            NewEgg(self.sub_name, self.newegg, product_type=self.product_type, msrp=self.msrp),
             BandH(self.sub_name, self.bh, product_type=self.product_type, msrp=self.msrp),
             Walmart(self.sub_name, self.walmart, self.walmart_product_image_alt, product_type=self.product_type, msrp=self.msrp),
             AmazonUsed(self.sub_name, self.amazon, product_type=self.product_type, msrp=self.msrp),

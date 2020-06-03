@@ -4,7 +4,7 @@ from bs4.element import Tag
 
 
 class NewEgg(BaseClient):
-    """A (hopefully) re-usable CompUSA web scraping client."""
+    """A (hopefully) re-usable NewEgg web scraping client."""
 
     source = "NewEgg"
     use_status = "New"
@@ -20,7 +20,7 @@ class NewEgg(BaseClient):
         )
 
     def out_of_stock(self):
-        return "OUT OF STOCK" in self.soup.find(attrs={"id": "landingpage-stock"}).text
+        return "OUT OF STOCK" in self.soup.find_all(attrs={"id": "landingpage-stock"})
 
     def get_price(self):
         """Should only be called from inside get_product()"""
