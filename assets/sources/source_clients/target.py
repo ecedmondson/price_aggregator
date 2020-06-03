@@ -69,6 +69,7 @@ class Target(BaseMultiplesClient):
             photo=photo,
             instock=stock(color, size),
             new=self.use_status,
+            product_link=self.product_url
         )
 
     def target_js_iteration(self):
