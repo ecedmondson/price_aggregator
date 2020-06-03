@@ -1,4 +1,4 @@
-from itertools import chain
+from functools import reduce
 from builtins import any
 
 
@@ -14,5 +14,13 @@ class BaseProduct:
 
     def get_all_products(self):
         """List of ScrapedProduct objects."""
-        return [client.get_product() for client in self.clients]
+        products = []
+        for client in self.clients:
+            p = client.get_product()
+            if isinstance(p, list):
+                products.extend(p)
+            else:
+                products.append(p)
+        return products
+        
 

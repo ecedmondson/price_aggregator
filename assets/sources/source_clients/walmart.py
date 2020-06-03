@@ -13,6 +13,7 @@ class Walmart(BaseClient):
         self.product_url = product_url
         self.product_img_alt = product_img_alt
         self.filename = f"{self.source.lower()}_{self.product_name}"
+        self.backup_file=f"{self.product_name}/{self.source.lower().replace(' ', '_')}.html"
         super().__init__(**kwargs)
         self.scraper.add(
             document=lambda: self.get(self.product_url),
@@ -27,6 +28,13 @@ class Walmart(BaseClient):
 
     def get_photo(self):
         imgs = self.soup.find_all("img")
-        imgs = list(filter(lambda e: "alt" in e.attrs, imgs))
+        imgs = list(filter(lambda e: "alt" in e.attrs.keys(), imgs))
         imgs = list(filter(lambda e: self.product_img_alt in e.attrs["alt"], imgs))
         return imgs[0].attrs["src"]
+
+class WalmartRefurbished(Walmart):
+    use_status = "Used"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+

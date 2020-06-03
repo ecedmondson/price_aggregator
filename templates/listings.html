@@ -28,7 +28,7 @@
                         <label for="filter-store-walmart">Walmart</label>
                     </div>
                     <div>
-                        <input type="checkbox" name="sources_to_exclude_newegg" id="filter-store-newegg" value="Newegg">
+                        <input type="checkbox" name="sources_to_exclude_newegg" id="filter-store-newegg" value="NewEgg">
                         <label for="filter-store-newegg">Newegg</label>
                     </div>
                     <div>
@@ -96,7 +96,9 @@
                     </div>
                     <div class="listing-info-container">
                         <div class="listing-name-container">
-                            <h2>{{item.name}}</h2>
+                            <a href={{ item.product_link }}>
+                            <h2>{{item.readable_name}}</h2>
+                            </a>
                         </div>
                         <div class="listing-price-container">
                             <h5>Price: {{item.price}}</h5>

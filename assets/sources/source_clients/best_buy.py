@@ -10,6 +10,7 @@ class BestBuy(BaseClient):
         self.product_name = product_name
         self.product_url = product_url
         self.filename = f"{self.source.lower()}_{self.product_name}"
+        self.backup_file=f"{self.product_name}/{self.source.lower().replace(' ', '_')}.html"
         super().__init__(**kwargs)
         self.scraper.add(
             document=lambda: self.dynamic_get(self.product_url),
@@ -20,7 +21,10 @@ class BestBuy(BaseClient):
         add_to_cart_button = self.soup.find(
             attrs={"class": "fulfillment-add-to-cart-button"}
         )
-        return "Sold Out" in add_to_cart_button.text
+        try:
+            return "Sold Out" in add_to_cart_button.text
+        except AttributeError:
+            return True
 
     def get_price(self):
         try:

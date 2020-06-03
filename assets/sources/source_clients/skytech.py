@@ -1,18 +1,19 @@
 from bs4 import BeautifulSoup
+from bs4.element import Tag
 from assets.sources.base_client import BaseClient
 
 
-class BandH(BaseClient):
+class Skytech(BaseClient):
     """A (hopefully) re-usable CompUSA web scraping client."""
 
-    source = "B&H"
+    source = "Skytech"
     use_status = "New"
 
     def __init__(self, product_name, product_url, **kwargs):
         self.product_name = product_name
         self.product_url = product_url
         self.filename = f"{self.source.lower()}_{self.product_name}"
-        self.backup_file = f"{self.product_name}/b_and_h.html"
+        self.backup_file = f"{self.product_name}/skytech.html"
         super().__init__(**kwargs)
         self.scraper.add(
             document=lambda: self.get(self.product_url),
@@ -20,17 +21,14 @@ class BandH(BaseClient):
         )
 
     def out_of_stock(self):
-        return (
-            "More on the Way"
-            in self.soup.find(attrs={"data-selenium": "stockStatus"}).text
-        )
+        return bool(self.document.text)
 
     def get_price(self):
         """Should only be called from inside get_product()"""
-        return self.soup.find_all(attrs={"data-selenium": "pricingPrice"})[0].text
+        return f'{self.soup.find(attrs={"class": "woocommerce-Price-amount"}).text}'
 
     def get_photo(self):
         """Should only be called from inside get_product()"""
-        return self.soup.find_all(attrs={"data-selenium": "inlineMediaMainImage"})[
-            0
-        ].attrs["src"]
+        photo_box = self.soup.find(attrs={"class": "woocommerce-product-gallery__wrapper"}).contents
+        return list(filter(lambda x: isinstance(x, Tag), photo_box))[0].contents[0].contents[0].attrs["src"]
+
