@@ -48,4 +48,3 @@ class AmazonUsed(Amazon):
     def get_price(self):
         # usedBuySection only works with New products
         return self.soup.find(attrs={"class": "a-color-price"}).text
-        #.replace("New & Used (28) from ", "").strip()
