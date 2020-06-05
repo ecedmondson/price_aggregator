@@ -47,7 +47,13 @@ class ProductDBInterface:
 
     def calculate_savings(self, product):
         price = product.price[1:-3].replace(',', '')
-        product.savings = f"${int(product.msrp) - int(price)}"
+        product.savings = int(product.msrp) - int(price)
+        if product.savings < 0:
+            product.savings = product.savings * -1
+            product.savings = "$" + f"{product.savings}" + " OVER MSRP"
+        else:
+            product.savings = "$" + f"{product.savings}"   
+
 
     @property
     def read_products_from_db(self):
