@@ -43,9 +43,8 @@ class Amazon(BaseClient):
 class AmazonUsed(Amazon):
     """ A (hopefully) re-usable Amazon web-scraping client for used content."""
 
-    source = "Amazon"
     use_status = "Used"
 
     def get_price(self):
         # usedBuySection only works with New products
-        return self.soup.find(id="usedBuySection").text.replace("Buy used:", "").strip()
+        return self.soup.find(attrs={"class": "a-color-price"}).text

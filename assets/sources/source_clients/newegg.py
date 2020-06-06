@@ -1,10 +1,11 @@
 from bs4 import BeautifulSoup
 from assets.sources.base_client import BaseClient
 from bs4.element import Tag
+from builtins import any
 
 
 class NewEgg(BaseClient):
-    """A (hopefully) re-usable CompUSA web scraping client."""
+    """A (hopefully) re-usable NewEgg web scraping client."""
 
     source = "NewEgg"
     use_status = "New"
@@ -20,7 +21,8 @@ class NewEgg(BaseClient):
         )
 
     def out_of_stock(self):
-        return "OUT OF STOCK" in self.soup.find(attrs={"id": "landingpage-stock"}).text
+        stock = self.soup.find_all(attrs={"id":"landingpage-stock"})
+        return any("OUT OF STOCK" in x for x in stock)
 
     def get_price(self):
         """Should only be called from inside get_product()"""
