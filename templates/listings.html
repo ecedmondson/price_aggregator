@@ -43,7 +43,27 @@
 
                 </fieldset>
             </div>
-
+           <div class="filter-input-container">
+           <fieldset id="filter-manufacturer" class="filter-fieldset">
+                    <legend>Filter Out Manufacturer</legend>
+                    <div>
+                        <input type="checkbox" name="manufacturer_apple" id="filter-apple" value="Apple">
+                        <label for="filter-apple">Apple</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="manufacturer_hp" id="filter-hp" value="HP">
+                        <label for="filter-hp">HP</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="manufacturer_microsoft" id="filter-microsoft" value="Microsoft">
+                        <label for="filter-microsoft">Microsoft</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="manufacturer_skytech" id="filter-skytech" value="Skytech">
+                        <label for="filter-skytech">Skytech</label>
+                    </div>
+            </fieldset>
+            </div>
             <div class="filter-input-container">
                 <fieldset class="filter-fieldset">
                     <legend>Condition</legend>
@@ -110,7 +130,10 @@
                             <h5>Condition: {{item.new}}</h5>
                         </div>
                         <div class="listing-availability-container">
-                            <h5>Availability: {{item.instock}}: {{item.source}}</h5>
+                            <h5>Availability: {{item.instock}} at {{item.source}}</h5>
+                        </div>
+                        <div class="listing-manufacturer-container">
+                            <h5>Manufacturer: {{item.manufacturer}}</h5>
                         </div>
                     </div>
                 </div>

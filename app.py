@@ -64,7 +64,7 @@ class ProductDBInterface:
         return products
 
 
-    def filter_products(self, json=False, product_type=None, sources_to_exclude=None, price_ceiling=0, use_status=None, **kwargs):
+    def filter_products(self, json=False, product_type=None, sources_to_exclude=None, manufacturers=None, price_ceiling=0, use_status=None, **kwargs):
         """Pass filters as kwargs
         
         Filter options:
@@ -76,10 +76,11 @@ class ProductDBInterface:
         all_products = self.read_products_from_db
         product_type = list_from(product_type) or []
         sources_to_exclude = list_from(sources_to_exclude) or []
+        manufacturers = list_from(manufacturers) or []
         price_ceiling = int(price_ceiling)
         use_status = list_from(use_status) or []
         # List typecast since chain is consumed upon iteration
-        exclude = list(chain(product_type, sources_to_exclude, use_status))
+        exclude = list(chain(product_type, sources_to_exclude, manufacturers, use_status))
         
         def filter_price_ceiling(x):
             if price_ceiling == 0:
@@ -93,7 +94,7 @@ class ProductDBInterface:
 
         def desirable(product):
             """Takes a ScrapedProduct object and returns user-desirability boolean."""
-            prod_chars = [getattr(product, x) for x in ["source", "price_n", "new", "product_type"]]
+            prod_chars = [getattr(product, x) for x in ["source", "manufacturer", "price_n", "new", "product_type"]]
             exclusion_matches = [value_matches_filter(x) for x in prod_chars]
             return any(exclusion_matches)
 
@@ -197,6 +198,10 @@ def listings():
         data = request.form.to_dict()
         sources_to_exclude_keys = list(filter(lambda x: "sources_to_exclude" in x, list(data.keys())))
         data["sources_to_exclude"] = [data[x] for x in sources_to_exclude_keys]
+        manufacturer_keys = list(filter(lambda x: "manufacturer" in x, list(data.keys())))
+        data["manufacturers"] = [data[x] for x in manufacturer_keys]
+        print(manufacturer_keys)
+        print(data)
         if not data['price_ceiling']:
             data['price_ceiling'] = 0
         return render_template('listings.html', items=interface.filter_products(**data))
